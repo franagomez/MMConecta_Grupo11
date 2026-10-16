@@ -4,7 +4,7 @@ Prototipo académico DSY1105 para el caso Master Martini. Equipo: Michel y Franc
 
 ## Estado
 
-Base inicial con Kotlin, Jetpack Compose, Material 3 y separación Model / Repository / ViewModel / Screen. Inicio con tres contenidos ficticios y filtro de categoría. La selección vive en memoria; aún no hay persistencia, formularios, navegación a detalles ni recursos nativos.
+Base inicial con Kotlin, Jetpack Compose, Material 3 y separación Model / Repository / ViewModel / Screen. Inicio con tres contenidos ficticios y filtro de categoría. La selección vive en memoria; las tarjetas abren detalles con contenido de demostración. Aún no hay persistencia, formularios ni recursos nativos.
 
 ## Abrir y ejecutar
 

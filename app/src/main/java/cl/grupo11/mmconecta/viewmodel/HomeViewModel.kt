@@ -24,6 +24,8 @@ class HomeViewModel(
     ))
     val uiState = mutableState.asStateFlow()
 
+    fun findContent(id: String?): LearningContent? = allContents.find { it.id == id }
+
     fun selectCategory(category: String) {
         if (category !in uiState.value.categories) return
         mutableState.update {
