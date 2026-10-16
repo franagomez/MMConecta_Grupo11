@@ -59,4 +59,4 @@ En Android Studio, seleccionar Clone Repository e ingresar https://github.com/fr
 
 ## Perfil de demostración
 
-Desde **Mi perfil** se puede completar nombre, correo, tipo de negocio e intereses con datos ficticios. La validación está en `ProfileViewModel`, separada de la pantalla Compose. El guardado es temporal, en memoria; falta incorporar almacenamiento local. Ver `docs/ESTADO.md` para pruebas realizadas y pendientes.
+Desde **Mi perfil** se puede completar nombre, correo, tipo de negocio e intereses con datos ficticios. La validación está en `ProfileViewModel`, separada de la pantalla Compose. El perfil se guarda localmente con SharedPreferences mediante un repositorio. Solo los cambios confirmados con Guardar perfil se recuperan al volver a abrir la app. Ver `docs/ESTADO.md` para pruebas realizadas y pendientes.

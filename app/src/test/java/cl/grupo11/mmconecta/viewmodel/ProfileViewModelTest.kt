@@ -3,8 +3,31 @@ package cl.grupo11.mmconecta.viewmodel
 import cl.grupo11.mmconecta.model.UserProfile
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.Before
+import org.junit.After
+import cl.grupo11.mmconecta.repository.ProfileRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.resetMain
 
+private class FakeProfileRepository(var profile: UserProfile? = null) : ProfileRepository {
+    var fail = false
+    override suspend fun load(): UserProfile? {
+        if (fail) error("Read failed")
+        return profile
+    }
+    override suspend fun save(profile: UserProfile) {
+        if (fail) error("Write failed")
+        this.profile = profile
+    }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModelTest {
+    @Before fun setup() { Dispatchers.setMain(UnconfinedTestDispatcher()) }
+    @After fun cleanup() { Dispatchers.resetMain() }
     private val valid = UserProfile("Ana Demo", "ana@example.com", "Pastelería", setOf("Panadería"))
 
     @Test fun emptyProfileReportsAllRequiredFields() {
@@ -32,7 +55,7 @@ class ProfileViewModelTest {
     }
 
     @Test fun savesNormalizedProfileAndKeepsLastValidSaveOnError() {
-        val vm = ProfileViewModel()
+        val vm = ProfileViewModel(FakeProfileRepository())
         vm.changeName(" Ana Demo ")
         vm.changeEmail(" ana@example.com ")
         vm.selectBusiness("Pastelería")
@@ -51,7 +74,7 @@ class ProfileViewModelTest {
     }
 
     @Test fun interestCanBeSelectedAndRemoved() {
-        val vm = ProfileViewModel()
+        val vm = ProfileViewModel(FakeProfileRepository())
         vm.toggleInterest("Panadería")
         vm.toggleInterest("Pastelería")
         assertEquals(setOf("Panadería", "Pastelería"), vm.uiState.value.draft.interests)
@@ -59,5 +82,40 @@ class ProfileViewModelTest {
         assertEquals(setOf("Pastelería"), vm.uiState.value.draft.interests)
         vm.toggleInterest("Desconocido")
         assertEquals(setOf("Pastelería"), vm.uiState.value.draft.interests)
+    }
+
+    @Test fun newViewModelLoadsLastSavedProfile() {
+        val repository = FakeProfileRepository(valid)
+        val first = ProfileViewModel(repository)
+        first.changeName("Ana Actualizada")
+        first.save()
+        val reopened = ProfileViewModel(repository)
+        assertEquals("Ana Actualizada", reopened.uiState.value.draft.name)
+        assertEquals(valid.email, reopened.uiState.value.draft.email)
+        assertFalse(reopened.uiState.value.busy)
+    }
+
+    @Test fun failedWriteDoesNotReportSuccessAndCanRetry() {
+        val repository = FakeProfileRepository(valid)
+        val vm = ProfileViewModel(repository)
+        vm.changeName("Ana Nueva")
+        repository.fail = true
+        vm.save()
+        assertFalse(vm.uiState.value.saved)
+        assertNotNull(vm.uiState.value.storageError)
+        assertEquals(valid, repository.profile)
+        repository.fail = false
+        vm.save()
+        assertTrue(vm.uiState.value.saved)
+        assertNull(vm.uiState.value.storageError)
+        assertEquals("Ana Nueva", repository.profile?.name)
+    }
+
+    @Test fun loadFailureIsVisibleAndDoesNotLockForm() {
+        val repository = FakeProfileRepository().apply { fail = true }
+        val vm = ProfileViewModel(repository)
+        assertNotNull(vm.uiState.value.storageError)
+        assertFalse(vm.uiState.value.busy)
+        assertFalse(vm.uiState.value.saved)
     }
 }

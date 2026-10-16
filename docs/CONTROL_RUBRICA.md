@@ -14,10 +14,10 @@
 |---|---|---|
 | Arquitectura | Código inicial separado en ui, viewmodel, model, repository | Base ejecutada en equipo de Michel; explicación y ejecución por ambas pendientes |
 | Diseño Material 3 | Pantalla inicial escrita | Ejecución, accesibilidad y adaptación |
-| Navegación | Pendiente | Recorrido y retorno entre pantallas |
-| Formularios | Pendiente | Validaciones, errores y modificación en vivo |
+| Navegación | Catálogo y detalle probados; perfil conectado | Verificar recorrido visual del perfil |
+| Formularios | Perfil validado; pruebas unitarias correctas | Recorrido visual y modificación en vivo |
 | Estado | StateFlow y filtro probados en emulador | Resto de interacciones pendiente |
-| Persistencia | Pendiente | Guardar, recuperar, actualizar y conservar tras reinicio |
+| Persistencia | Perfil implementado con repositorio local de preferencias | Verificar reinicio del proceso; favoritos pendientes |
 | Cámara | Pendiente | Integración real, contenido de prueba, permisos según implementación, cancelación/denegación |
 | Notificaciones locales | Pendiente | Canal/configuración, permiso según Android, envío visible y denegación |
 | Animaciones | Pendiente | Ejecución y justificación de utilidad |

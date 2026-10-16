@@ -1,6 +1,10 @@
 package cl.grupo11.mmconecta.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import cl.grupo11.mmconecta.repository.ProfileRepository
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import cl.grupo11.mmconecta.model.UserProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,14 +37,30 @@ data class ProfileUiState(
     val savedProfile: UserProfile? = null,
     val errors: ProfileErrors = ProfileErrors(),
     val submitted: Boolean = false,
-    val saved: Boolean = false
+    val saved: Boolean = false,
+    val busy: Boolean = true,
+    val storageError: String? = null
 )
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() {
     private val mutableState = MutableStateFlow(ProfileUiState())
     val uiState = mutableState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            try {
+                val profile = repository.load()
+                mutableState.update { it.copy(draft = profile ?: UserProfile(), savedProfile = profile, busy = false) }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                mutableState.update { it.copy(busy = false, storageError = "No pudimos cargar el perfil. Vuelve a abrir la app para intentarlo de nuevo.") }
+            }
+        }
+    }
+
     private fun edit(transform: (UserProfile) -> UserProfile) {
+        if (uiState.value.busy) return
         mutableState.update {
             val draft = transform(it.draft)
             it.copy(draft = draft, saved = false,
@@ -57,11 +77,21 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun save() {
-        mutableState.update {
-            val profile = it.draft.copy(name = it.draft.name.trim(), email = it.draft.email.trim())
-            val errors = validateProfile(profile)
-            it.copy(draft = profile, errors = errors, submitted = true, saved = errors.isValid,
-                savedProfile = if (errors.isValid) profile else it.savedProfile)
+        if (uiState.value.busy) return
+        val profile = uiState.value.draft.let { it.copy(name = it.name.trim(), email = it.email.trim()) }
+        val errors = validateProfile(profile)
+        mutableState.update { it.copy(draft = profile, errors = errors, submitted = true, saved = false) }
+        if (!errors.isValid) return
+        mutableState.update { it.copy(busy = true, storageError = null) }
+        viewModelScope.launch {
+            try {
+                repository.save(profile)
+                mutableState.update { it.copy(savedProfile = profile, saved = true, busy = false) }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                mutableState.update { it.copy(busy = false, storageError = "No pudimos guardar el perfil. Inténtalo otra vez.") }
+            }
         }
     }
 }

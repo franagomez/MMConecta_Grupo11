@@ -33,13 +33,13 @@ fun ProfileScreen(
             item { Text("Prueba con datos ficticios. Todos los campos son obligatorios.") }
             item {
                 OutlinedTextField(value = state.draft.name, onValueChange = onNameChanged,
-                    label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    enabled = !state.busy, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
                     isError = state.errors.name != null,
                     supportingText = { state.errors.name?.let { Text(it) } })
             }
             item {
                 OutlinedTextField(value = state.draft.email, onValueChange = onEmailChanged,
-                    label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    enabled = !state.busy, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     isError = state.errors.email != null,
                     supportingText = { state.errors.email?.let { Text(it) } })
@@ -47,7 +47,7 @@ fun ProfileScreen(
             item {
                 Text("Tipo de negocio", style = MaterialTheme.typography.titleMedium)
                 businessOptions.forEach { option ->
-                    FilterChip(selected = state.draft.business == option,
+                    FilterChip(enabled = !state.busy, selected = state.draft.business == option,
                         onClick = { onBusinessSelected(option) }, label = { Text(option) })
                 }
                 state.errors.business?.let { Text(it, color = MaterialTheme.colorScheme.error) }
@@ -56,18 +56,20 @@ fun ProfileScreen(
                 Text("Tus intereses", style = MaterialTheme.typography.titleMedium)
                 Text("Puedes elegir más de uno.")
                 interestOptions.forEach { option ->
-                    FilterChip(selected = option in state.draft.interests,
+                    FilterChip(enabled = !state.busy, selected = option in state.draft.interests,
                         onClick = { onInterestSelected(option) }, label = { Text(option) })
                 }
                 state.errors.interests?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
             item {
-                Button(onClick = onSave, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
-                if (state.saved) Text("Perfil guardado durante esta sesión.", color = MaterialTheme.colorScheme.primary)
+                Button(enabled = !state.busy, onClick = onSave, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
+                if (state.busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                state.storageError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                if (state.saved) Text("Perfil guardado en este dispositivo.", color = MaterialTheme.colorScheme.primary)
                 else if (state.submitted && !state.errors.isValid) {
                     Text("Revisa los campos indicados arriba.", color = MaterialTheme.colorScheme.error)
                 }
-                Text("Por ahora, el perfil se conserva solo mientras la app permanece en memoria.",
+                Text("Los cambios se conservan al cerrar la app después de pulsar Guardar perfil.",
                     style = MaterialTheme.typography.bodySmall)
             }
         }

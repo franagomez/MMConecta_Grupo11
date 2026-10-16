@@ -1,6 +1,9 @@
 package cl.grupo11.mmconecta
 
 import android.os.Bundle
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import cl.grupo11.mmconecta.repository.LocalProfileRepository
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,7 +28,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MMConectaTheme {
                 val homeViewModel: HomeViewModel = viewModel()
-                val profileViewModel: ProfileViewModel = viewModel()
+                val profileViewModel: ProfileViewModel = viewModel(factory = viewModelFactory {
+                    initializer { ProfileViewModel(LocalProfileRepository(applicationContext)) }
+                })
                 val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
                 var showProfile by rememberSaveable { mutableStateOf(false) }
                 val state by homeViewModel.uiState.collectAsStateWithLifecycle()
