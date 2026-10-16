@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit) {
+fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onContentSelected: (String) -> Unit) {
     Scaffold { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -38,7 +38,7 @@ fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit) {
                 }
             }
             items(state.contents, key = { it.id }) { content ->
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(onClick = { onContentSelected(content.id) }, modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(content.category, color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.labelLarge)
