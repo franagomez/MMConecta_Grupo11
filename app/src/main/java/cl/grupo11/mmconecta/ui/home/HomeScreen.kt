@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onContentSelected: (String) -> Unit) {
+fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onContentSelected: (String) -> Unit, onProfileSelected: () -> Unit) {
     Scaffold { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -21,6 +21,7 @@ fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onConte
             item {
                 Text("MMConecta", style = MaterialTheme.typography.headlineLarge)
                 Text("Aprende, crea y conecta", style = MaterialTheme.typography.titleMedium)
+                OutlinedButton(onClick = onProfileSelected) { Text("Mi perfil") }
             }
             item {
                 Text("Conocimiento para tu negocio", style = MaterialTheme.typography.headlineSmall)

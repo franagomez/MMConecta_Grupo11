@@ -56,3 +56,7 @@ Consultar `docs/CONTROL_RUBRICA.md` antes de ampliar el alcance o marcar una fun
 ## Primer inicio de Francisca
 
 En Android Studio, seleccionar Clone Repository e ingresar https://github.com/franagomez/MMConecta_Grupo11.git. Elegir una carpeta propia. Al abrir, usar JVM 21 si Android Studio ofrece cambiarla, instalar SDK 35 cuando lo solicite y sincronizar Gradle. Ejecutar app en un emulador o dispositivo API 26 o superior. Confirmar que Chocolatería muestra una tarjeta y Todos muestra tres. No copiar local.properties desde otro computador.
+
+## Perfil de demostración
+
+Desde **Mi perfil** se puede completar nombre, correo, tipo de negocio e intereses con datos ficticios. La validación está en `ProfileViewModel`, separada de la pantalla Compose. El guardado es temporal, en memoria; falta incorporar almacenamiento local. Ver `docs/ESTADO.md` para pruebas realizadas y pendientes.

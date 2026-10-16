@@ -11,6 +11,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.activity.compose.BackHandler
+import cl.grupo11.mmconecta.ui.profile.ProfileScreen
+import cl.grupo11.mmconecta.viewmodel.ProfileViewModel
 import cl.grupo11.mmconecta.ui.detail.ContentDetailScreen
 import cl.grupo11.mmconecta.ui.home.HomeScreen
 import cl.grupo11.mmconecta.viewmodel.HomeViewModel
@@ -23,12 +25,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             MMConectaTheme {
                 val homeViewModel: HomeViewModel = viewModel()
+                val profileViewModel: ProfileViewModel = viewModel()
+                val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
+                var showProfile by rememberSaveable { mutableStateOf(false) }
                 val state by homeViewModel.uiState.collectAsStateWithLifecycle()
                 var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
                 val selectedContent = homeViewModel.findContent(selectedId)
-                BackHandler(enabled = selectedContent != null) { selectedId = null }
-                if (selectedContent == null) {
-                    HomeScreen(state, homeViewModel::selectCategory) { selectedId = it }
+                BackHandler(enabled = showProfile || selectedContent != null) {
+                    if (showProfile) showProfile = false else selectedId = null
+                }
+                if (showProfile) {
+                    ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
+                        profileViewModel::selectBusiness, profileViewModel::toggleInterest,
+                        profileViewModel::save, onBack = { showProfile = false })
+                } else if (selectedContent == null) {
+                    HomeScreen(state, homeViewModel::selectCategory,
+                        onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true })
                 } else {
                     ContentDetailScreen(selectedContent, onBack = { selectedId = null })
                 }
