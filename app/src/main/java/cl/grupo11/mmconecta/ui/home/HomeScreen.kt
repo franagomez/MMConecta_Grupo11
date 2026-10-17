@@ -11,7 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onContentSelected: (String) -> Unit, onProfileSelected: () -> Unit) {
+fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onContentSelected: (String) -> Unit, onProfileSelected: () -> Unit,
+    onFavoriteSelected: (String) -> Unit,
+    onFavoritesFilterChanged: (Boolean) -> Unit,
+    onRetryFavorites: () -> Unit
+) {
     Scaffold { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -38,6 +42,20 @@ fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onConte
                     }
                 }
             }
+            item {
+                FilterChip(selected = state.onlyFavorites,
+                    onClick = { onFavoritesFilterChanged(!state.onlyFavorites) },
+                    label = { Text("Mis favoritos") })
+                if (state.favoritesBusy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                if (!state.favoritesLoaded && !state.favoritesBusy) {
+                    TextButton(onClick = onRetryFavorites) { Text("Reintentar carga") }
+                }
+                if (state.contents.isEmpty() && state.favoritesLoaded) {
+                    Text(if (state.onlyFavorites) "No tienes favoritos en esta categoría. Puedes agregarlos desde el catálogo."
+                        else "No hay contenidos en esta categoría.")
+                }
+            }
             items(state.contents, key = { it.id }) { content ->
                 Card(onClick = { onContentSelected(content.id) }, modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -45,6 +63,12 @@ fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onConte
                             style = MaterialTheme.typography.labelLarge)
                         Text(content.title, style = MaterialTheme.typography.titleLarge)
                         Text(content.description, style = MaterialTheme.typography.bodyLarge)
+                        OutlinedButton(
+                            enabled = state.favoritesLoaded && !state.favoritesBusy,
+                            onClick = { onFavoriteSelected(content.id) }
+                        ) {
+                            Text(if (content.id in state.favoriteIds) "Quitar de favoritos" else "Guardar en favoritos")
+                        }
                     }
                 }
             }

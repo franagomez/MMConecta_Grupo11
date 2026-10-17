@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import cl.grupo11.mmconecta.repository.LocalProfileRepository
+import cl.grupo11.mmconecta.repository.LocalFavoritesRepository
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,7 +28,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MMConectaTheme {
-                val homeViewModel: HomeViewModel = viewModel()
+                val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory {
+                    initializer { HomeViewModel(LocalFavoritesRepository(applicationContext)) }
+                })
                 val profileViewModel: ProfileViewModel = viewModel(factory = viewModelFactory {
                     initializer { ProfileViewModel(LocalProfileRepository(applicationContext)) }
                 })
@@ -45,7 +48,10 @@ class MainActivity : ComponentActivity() {
                         profileViewModel::save, onBack = { showProfile = false })
                 } else if (selectedContent == null) {
                     HomeScreen(state, homeViewModel::selectCategory,
-                        onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true })
+                        onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true },
+                        onFavoriteSelected = homeViewModel::toggleFavorite,
+                        onFavoritesFilterChanged = homeViewModel::showFavorites,
+                        onRetryFavorites = homeViewModel::loadFavorites)
                 } else {
                     ContentDetailScreen(selectedContent, onBack = { selectedId = null })
                 }

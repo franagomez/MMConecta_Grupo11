@@ -17,7 +17,7 @@
 | Navegación | Catálogo y detalle probados; perfil conectado | Perfil abierto y retorno probado; revisar equipo de Francisca |
 | Formularios | Perfil validado; pruebas unitarias correctas | Campos vacíos y guardado válido probados en emulador; modificación en vivo pendiente |
 | Estado | StateFlow y filtro probados en emulador | Resto de interacciones pendiente |
-| Persistencia | Perfil implementado con repositorio local de preferencias | Perfil recuperado después de Stop/Run en API 37; favoritos pendientes |
+| Persistencia | Perfil implementado con repositorio local de preferencias | Perfil recuperado después de Stop/Run en API 37; favoritos implementados, recorrido visual pendiente |
 | Cámara | Pendiente | Integración real, contenido de prueba, permisos según implementación, cancelación/denegación |
 | Notificaciones locales | Pendiente | Canal/configuración, permiso según Android, envío visible y denegación |
 | Animaciones | Pendiente | Ejecución y justificación de utilidad |

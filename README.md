@@ -60,3 +60,7 @@ En Android Studio, seleccionar Clone Repository e ingresar https://github.com/fr
 ## Perfil de demostración
 
 Desde **Mi perfil** se puede completar nombre, correo, tipo de negocio e intereses con datos ficticios. La validación está en `ProfileViewModel`, separada de la pantalla Compose. El perfil se guarda localmente con SharedPreferences mediante un repositorio. Solo los cambios confirmados con Guardar perfil se recuperan al volver a abrir la app. Ver `docs/ESTADO.md` para pruebas realizadas y pendientes.
+
+## Favoritos
+
+Cada tarjeta permite guardar o quitar el contenido de favoritos. El filtro **Mis favoritos** se combina con la categoría seleccionada y muestra un mensaje si la lista está vacía. Los identificadores se conservan en preferencias locales mediante `LocalFavoritesRepository`; la pantalla solo presenta el estado del ViewModel.
