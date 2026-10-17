@@ -46,3 +46,11 @@
 - Pendiente: recorrido visual completo, cierre del proceso y reapertura desde la interfaz, revisión de Francisca.
 
 - `connectedDebugAndroidTest`: una prueba aprobada en Medium Phone API 37. Guarda, recupera desde otra instancia del repositorio y actualiza todos los datos usando preferencias de prueba separadas; no modifica el perfil del usuario. Esta prueba no simula muerte del proceso.
+
+## Verificación manual del perfil en emulador API 37
+
+- Abrir Mi perfil desde el catálogo y regresar con Atrás: correcto.
+- Guardar vacío: aparecen errores de nombre, correo, negocio e intereses.
+- Completar Ana Demo, ana@example.com, negocio Pastelería e interés Panadería: los errores desaparecen y Guardar muestra confirmación local.
+- Detener el proceso con Stop de Android Studio, volver a ejecutar con Run y abrir Mi perfil: recupera los cuatro valores guardados.
+- Esta prueba cierra el pendiente de guardado y reapertura en este emulador. Falta revisar teclado virtual, orientación, tamaños de letra y el equipo de Francisca; no equivale a una revisión completa de accesibilidad.
