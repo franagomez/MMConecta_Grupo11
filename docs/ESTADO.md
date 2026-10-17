@@ -72,3 +72,15 @@
 5. Quitar el último favorito: aparece la lista vacía. Desactivar Mis favoritos recupera el catálogo.
 
 - Verificación automática: `testDebugUnitTest assembleDebug connectedDebugAndroidTest` correcto. 12 pruebas unitarias (4 de favoritos y 8 de perfil) y 2 pruebas Android de repositorios aprobadas en API 37. La prueba de favoritos verifica guardar, recuperar desde otra instancia, quitar uno y vaciar la selección; usa preferencias de prueba separadas.
+
+## Verificación manual de favoritos — 17 octubre 2026
+
+Versión probada: rama codex/favoritos, commit 4fd0d6d, emulador Medium Phone API 37.
+
+- Guardar Chocolatería cambia a Quitar de favoritos sin abrir el detalle.
+- Mis favoritos muestra únicamente el contenido guardado.
+- Combinar con Pastelería muestra lista vacía; volver a Chocolatería recupera la tarjeta.
+- Abrir detalle y Volver conserva categoría y filtro Mis favoritos.
+- Detener con Stop de Android Studio, ejecutar con Run y activar Mis favoritos recupera el contenido guardado.
+- Quitar el último favorito muestra lista vacía; desactivar el filtro restaura el catálogo.
+- No se observaron fallos en este recorrido. Queda pendiente revisión cruzada de Francisca y accesibilidad/orientación en otros tamaños. Tarea #3: en revisión, no cerrada.
