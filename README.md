@@ -51,7 +51,7 @@ Consultar `docs/CONTROL_RUBRICA.md` antes de ampliar el alcance o marcar una fun
 ## Plan de trabajo compartido
 
 - [Cronograma diario](docs/CRONOGRAMA.md)
-- [Cronograma editable en Word](docs/Cronograma_MMConecta_Michel_y_Francisca.docx)
+- [Tareas asignadas a Michel y Francisca](https://github.com/franagomez/MMConecta_Grupo11/issues)
 
 ## Primer inicio de Francisca
 
