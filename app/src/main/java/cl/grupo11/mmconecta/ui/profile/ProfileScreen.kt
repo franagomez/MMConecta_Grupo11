@@ -1,6 +1,9 @@
 package cl.grupo11.mmconecta.ui.profile
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -19,7 +22,9 @@ fun ProfileScreen(
     onBusinessSelected: (String) -> Unit,
     onInterestSelected: (String) -> Unit,
     onSave: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    photoState: ProfilePhotoUiState,
+    onTakePhoto: () -> Unit
 ) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Mi perfil") },
@@ -30,7 +35,23 @@ fun ProfileScreen(
             contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { Text("Prueba con datos ficticios. Todos los campos son obligatorios.") }
+            item {
+                Text("Imagen de prueba (opcional)", style = MaterialTheme.typography.titleMedium)
+                photoState.photo?.let {
+                    Image(bitmap = it.asImageBitmap(), contentDescription = "Imagen guardada del perfil",
+                        modifier = Modifier.size(120.dp), contentScale = ContentScale.Fit)
+                }
+                OutlinedButton(enabled = !photoState.busy, onClick = onTakePhoto) {
+                    Text(if (photoState.photo == null) "Tomar imagen de prueba" else "Cambiar imagen")
+                }
+                if (photoState.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                photoState.message?.let {
+                    Text(it, color = if (photoState.isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+                }
+                Text("Usa un objeto de prueba sin datos personales. La imagen se guarda al confirmar la captura.",
+                    style = MaterialTheme.typography.bodySmall)
+            }
+            item { Text("Prueba con datos ficticios. Los campos siguientes son obligatorios.") }
             item {
                 OutlinedTextField(value = state.draft.name, onValueChange = onNameChanged,
                     enabled = !state.busy, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth(),

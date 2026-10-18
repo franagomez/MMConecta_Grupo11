@@ -5,7 +5,7 @@
 - La captura del equipo mostró instalación exitosa y MMConecta ejecutándose en el emulador API 37.
 - Prueba manual realizada en el emulador: Chocolatería muestra una tarjeta y Todos restaura las tres.
 - Pendiente: comprobar ejecución en el equipo de Francisca y completar funciones de la evaluación.
-- Cámara, notificaciones y animaciones todavía no implementados. La persistencia del perfil se detalla abajo.
+- Cámara implementada en codex/camara-perfil; notificaciones y animaciones pendientes. Las verificaciones de cada avance se detallan abajo.
 - No se declara una revisión completa de accesibilidad ni compatibilidad con todos los dispositivos.
 
 ## Detalle de contenido
@@ -84,3 +84,17 @@ Versión probada: rama codex/favoritos, commit 4fd0d6d, emulador Medium Phone AP
 - Detener con Stop de Android Studio, ejecutar con Run y activar Mis favoritos recupera el contenido guardado.
 - Quitar el último favorito muestra lista vacía; desactivar el filtro restaura el catálogo.
 - No se observaron fallos en este recorrido. Queda pendiente revisión cruzada de Francisca y accesibilidad/orientación en otros tamaños. Tarea #3: en revisión, no cerrada.
+
+## Cámara del perfil — 17 octubre 2026
+
+Rama `codex/camara-perfil`, basada en `codex/favoritos`. Pendiente de revisión de Francisca; no integrada a main.
+
+- Captura delegada mediante TakePicturePreview: devuelve una miniatura Bitmap. No requiere URI de salida ni FileProvider en este flujo; no es una captura de resolución completa.
+- La app no solicita permiso CAMERA porque abre una aplicación de cámara externa. Si no puede abrirla, muestra un error. Se deben comprobar otros dispositivos y políticas de cámara.
+- PNG privado en filesDir, escritura con AtomicFile en IO. Cancelar no escribe; un fallo conserva el estado anterior y muestra error.
+- Pruebas automáticas: compilación correcta, 14 pruebas unitarias y 3 de repositorios en emulador API 37 aprobadas. La prueba de imagen usa bitmaps sintéticos en carpeta temporal y comprueba lectura y reemplazo.
+- Prueba manual API 37: abrir cámara, capturar escena sintética del emulador y confirmar muestra la miniatura y mensaje de guardado.
+- Abrir de nuevo y cancelar con Atrás conserva la imagen y muestra mensaje de cancelación.
+- Stop y Run de Android Studio, luego Mi perfil: la imagen se recupera del almacenamiento.
+- Pendiente: revisión cruzada, dispositivo físico, orientación, accesibilidad y simulación de fallo real de escritura/cámara no disponible. El manejo de error existe, pero no se declara verificado manualmente en esas condiciones.
+- Cámara es el primer recurso nativo; notificaciones siguen pendientes (#6). No se declara cumplida la rúbrica completa.

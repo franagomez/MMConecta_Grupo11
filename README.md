@@ -4,12 +4,11 @@ Prototipo académico DSY1105 para el caso Master Martini. Equipo: Michel y Franc
 
 ## Estado
 
-Base inicial con Kotlin, Jetpack Compose, Material 3 y separación Model / Repository / ViewModel / Screen. Inicio con tres contenidos ficticios y filtro de categoría. La selección vive en memoria; las tarjetas abren detalles con contenido de demostración. Aún no hay persistencia, formularios ni recursos nativos.
+Prototipo con catálogo y detalle, perfil validado, favoritos persistentes e imagen opcional tomada con la cámara. Kotlin, Compose, Material 3 y lógica separada en ViewModels y repositorios. Esta rama incluye avances pendientes de revisión cruzada; las notificaciones y animaciones siguen pendientes.
 
 ## Abrir y ejecutar
 
-1. Instalar Android Studio desde https://deve
-2. loper.android.com/studio.
+1. Instalar Android Studio desde https://developer.android.com/studio.
 3. Abrir esta carpeta como proyecto, no la carpeta superior.
 4. Configurar SDK Android 35 y Build Tools 35.0.0 desde SDK Manager.
 5. Usar JDK 17 o 21 para Gradle y sincronizar el proyecto.
@@ -37,11 +36,10 @@ Trabajar con ramas `feature/catalogo` y `feature/perfil`, commits pequeños y re
 
 ## Próximas etapas
 
-- Navegación y pantalla de detalle.
-- Perfil ficticio con validaciones y estados de error.
-- Favoritos y perfil persistidos con Room.
-- Dos recursos nativos previstos: cámara (contenido sintético/de prueba) y notificaciones locales (recordatorio de contenido). Ambos deben manejar los permisos que correspondan, cancelación o denegación y demostrarse individualmente. Aún no implementados.
+- Revisión cruzada e integración de las ramas de detalle, perfil, favoritos y cámara.
+- Notificaciones locales (segundo recurso nativo, tarea #6 de Francisca).
 - Animaciones útiles y pruebas del recorrido completo.
+- Confirmar en la rúbrica EP2 si se exige Room: actualmente perfil y favoritos usan SharedPreferences; la imagen usa almacenamiento interno.
 - Ensayo de defensa individual con cambios de código.
 
 ## Control de requisitos
@@ -64,3 +62,7 @@ Desde **Mi perfil** se puede completar nombre, correo, tipo de negocio e interes
 ## Favoritos
 
 Cada tarjeta permite guardar o quitar el contenido de favoritos. El filtro **Mis favoritos** se combina con la categoría seleccionada y muestra un mensaje si la lista está vacía. Los identificadores se conservan en preferencias locales mediante `LocalFavoritesRepository`; la pantalla solo presenta el estado del ViewModel.
+
+## Cámara del perfil
+
+Mi perfil → Tomar imagen de prueba abre la aplicación de cámara. Al confirmar, guarda una miniatura PNG en el almacenamiento interno; cancelar conserva la anterior. No se guarda una foto de resolución completa ni se sube a un servidor. La imagen se guarda independientemente del formulario. `ProfilePhotoViewModel` gestiona el estado y `LocalProfilePhotoRepository` la escritura. Revisar pruebas y limitaciones en `docs/ESTADO.md`.

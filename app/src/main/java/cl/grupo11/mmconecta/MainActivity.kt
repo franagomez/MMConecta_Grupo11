@@ -1,6 +1,11 @@
 package cl.grupo11.mmconecta
 
 import android.os.Bundle
+import android.content.ActivityNotFoundException
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import cl.grupo11.mmconecta.repository.LocalProfilePhotoRepository
+import cl.grupo11.mmconecta.viewmodel.ProfilePhotoViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import cl.grupo11.mmconecta.repository.LocalProfileRepository
@@ -34,6 +39,13 @@ class MainActivity : ComponentActivity() {
                 val profileViewModel: ProfileViewModel = viewModel(factory = viewModelFactory {
                     initializer { ProfileViewModel(LocalProfileRepository(applicationContext)) }
                 })
+                val photoViewModel: ProfilePhotoViewModel = viewModel(factory = viewModelFactory {
+                    initializer { ProfilePhotoViewModel(LocalProfilePhotoRepository(filesDir)) }
+                })
+                val photoState by photoViewModel.uiState.collectAsStateWithLifecycle()
+                val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+                    photoViewModel.onCameraResult(it)
+                }
                 val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
                 var showProfile by rememberSaveable { mutableStateOf(false) }
                 val state by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -45,7 +57,17 @@ class MainActivity : ComponentActivity() {
                 if (showProfile) {
                     ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
                         profileViewModel::selectBusiness, profileViewModel::toggleInterest,
-                        profileViewModel::save, onBack = { showProfile = false })
+                        profileViewModel::save, onBack = { showProfile = false },
+                        photoState = photoState,
+                        onTakePhoto = {
+                            try {
+                                cameraLauncher.launch(null)
+                            } catch (error: ActivityNotFoundException) {
+                                photoViewModel.cameraUnavailable()
+                            } catch (error: SecurityException) {
+                                photoViewModel.cameraUnavailable()
+                            }
+                        })
                 } else if (selectedContent == null) {
                     HomeScreen(state, homeViewModel::selectCategory,
                         onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true },
