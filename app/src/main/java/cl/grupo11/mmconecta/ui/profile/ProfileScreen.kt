@@ -7,6 +7,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,9 +53,7 @@ fun ProfileScreen(
                     Text(if (photoState.photo == null) "Tomar imagen de prueba" else "Cambiar imagen")
                 }
                 if (photoState.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
-                photoState.message?.let {
-                    Text(it, color = if (photoState.isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
-                }
+                ProfileFeedback(photoState.message, photoState.isError)
                 Text("Usa un objeto de prueba sin datos personales. La imagen se guarda al confirmar la captura.",
                     style = MaterialTheme.typography.bodySmall)
             }
@@ -85,14 +91,36 @@ fun ProfileScreen(
             item {
                 Button(enabled = !state.busy, onClick = onSave, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
                 if (state.busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                state.storageError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                if (state.saved) Text("Perfil guardado en este dispositivo.", color = MaterialTheme.colorScheme.primary)
-                else if (state.submitted && !state.errors.isValid) {
-                    Text("Revisa los campos indicados arriba.", color = MaterialTheme.colorScheme.error)
+                val message = when {
+                    state.busy -> "Procesando perfil…"
+                    state.storageError != null -> state.storageError
+                    state.saved -> "Perfil guardado en este dispositivo."
+                    state.submitted && !state.errors.isValid -> "Revisa los campos indicados arriba."
+                    else -> null
                 }
+                ProfileFeedback(message, state.storageError != null || (state.submitted && !state.errors.isValid))
                 Text("Los cambios se conservan al cerrar la app después de pulsar Guardar perfil.",
                     style = MaterialTheme.typography.bodySmall)
             }
+        }
+    }
+}
+
+/** Mantiene el aviso visible; la transición solo acompaña el cambio de estado. */
+@Composable
+private fun ProfileFeedback(message: String?, isError: Boolean) {
+    AnimatedContent(
+        targetState = message to isError,
+        modifier = Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
+        transitionSpec = { fadeIn(tween(180)) togetherWith fadeOut(tween(120)) },
+        label = "Mensaje del perfil"
+    ) { (text, error) ->
+        if (text != null) {
+            Text(
+                text = text,
+                color = if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
         }
     }
 }

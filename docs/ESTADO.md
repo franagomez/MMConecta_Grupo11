@@ -98,3 +98,13 @@ Rama `codex/camara-perfil`, basada en `codex/favoritos`. Pendiente de revisión 
 - Stop y Run de Android Studio, luego Mi perfil: la imagen se recupera del almacenamiento.
 - Pendiente: revisión cruzada, dispositivo físico, orientación, accesibilidad y simulación de fallo real de escritura/cámara no disponible. El manejo de error existe, pero no se declara verificado manualmente en esas condiciones.
 - Cámara es el primer recurso nativo; notificaciones siguen pendientes (#6). No se declara cumplida la rúbrica completa.
+
+## Mensajes del perfil — 19 octubre 2026
+
+Rama `codex/mensajes-perfil`, basada en `codex/camara-perfil`. Avance parcial de #7.
+
+- Transición breve de entrada/salida en mensajes de guardado, validación y cámara. El texto permanece visible hasta que cambia el estado.
+- Región semántica Polite para que los lectores de pantalla puedan anunciar cambios sin interrumpir. No equivale a una prueba con TalkBack.
+- Prioridad del aviso: operación en curso, error de almacenamiento, confirmación y errores del formulario.
+- `testDebugUnitTest assembleDebug`: correcto. No se añadieron pruebas que repliquen la animación.
+- Pendientes: revisión visual en emulador, TalkBack, teclado virtual, texto grande, orientación y revisión de Francisca. La tarea #7 continúa abierta.
