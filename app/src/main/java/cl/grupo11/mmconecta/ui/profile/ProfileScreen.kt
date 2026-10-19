@@ -13,6 +13,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.runtime.Composable
@@ -44,7 +45,8 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Text("Imagen de prueba (opcional)", style = MaterialTheme.typography.titleMedium)
+                Text("Imagen de prueba (opcional)", style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.semantics { heading() })
                 photoState.photo?.let {
                     Image(bitmap = it.asImageBitmap(), contentDescription = "Imagen guardada del perfil",
                         modifier = Modifier.size(120.dp), contentScale = ContentScale.Fit)
@@ -72,7 +74,8 @@ fun ProfileScreen(
                     supportingText = { state.errors.email?.let { Text(it) } })
             }
             item {
-                Text("Tipo de negocio", style = MaterialTheme.typography.titleMedium)
+                Text("Tipo de negocio", style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.semantics { heading() })
                 businessOptions.forEach { option ->
                     FilterChip(enabled = !state.busy, selected = state.draft.business == option,
                         onClick = { onBusinessSelected(option) }, label = { Text(option) })
@@ -80,7 +83,8 @@ fun ProfileScreen(
                 state.errors.business?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
             item {
-                Text("Tus intereses", style = MaterialTheme.typography.titleMedium)
+                Text("Tus intereses", style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.semantics { heading() })
                 Text("Puedes elegir más de uno.")
                 interestOptions.forEach { option ->
                     FilterChip(enabled = !state.busy, selected = option in state.draft.interests,
