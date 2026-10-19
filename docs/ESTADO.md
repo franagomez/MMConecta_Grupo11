@@ -99,7 +99,7 @@ Rama `codex/camara-perfil`, basada en `codex/favoritos`. Pendiente de revisión 
 - Pendiente: revisión cruzada, dispositivo físico, orientación, accesibilidad y simulación de fallo real de escritura/cámara no disponible. El manejo de error existe, pero no se declara verificado manualmente en esas condiciones.
 - Cámara es el primer recurso nativo; notificaciones siguen pendientes (#6). No se declara cumplida la rúbrica completa.
 
-## Mensajes del perfil — 19 octubre 2026
+## Mensajes y avisos del perfil
 
 Rama `codex/mensajes-perfil`, basada en `codex/camara-perfil`. Avance parcial de #7.
 
