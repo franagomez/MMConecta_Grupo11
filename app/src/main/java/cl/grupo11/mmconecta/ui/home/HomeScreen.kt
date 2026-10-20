@@ -1,6 +1,7 @@
 package cl.grupo11.mmconecta.ui.home
 
 import cl.grupo11.mmconecta.viewmodel.HomeUiState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,7 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit) {
+fun HomeScreen(
+    state: HomeUiState,
+    onCategorySelected: (String) -> Unit,
+    onContentClick: (String) -> Unit
+) {
     Scaffold { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -38,7 +43,11 @@ fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit) {
                 }
             }
             items(state.contents, key = { it.id }) { content ->
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onContentClick(content.id) }
+                ) {
                     Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(content.category, color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.labelLarge)

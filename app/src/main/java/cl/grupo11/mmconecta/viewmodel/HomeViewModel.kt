@@ -32,4 +32,6 @@ class HomeViewModel(
             })
         }
     }
+
+    fun getContentById(id: String?): LearningContent? = allContents.find { it.id == id }
 }
