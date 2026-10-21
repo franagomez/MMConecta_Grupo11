@@ -122,3 +122,9 @@ Rama `codex/mensajes-perfil`, basada en `codex/camara-perfil`. Avance parcial de
 El notificador consulta si las notificaciones de la app están habilitadas y si el canal Contenido nuevo tiene importancia NONE antes de publicar. En esos casos el ViewModel muestra un mensaje para revisar Ajustes, sin confirmar envío. Se conserva el manejo independiente del permiso POST_NOTIFICATIONS.
 
 Compilación y pruebas unitarias aprobadas. Dos pruebas nuevas comprueban el error por bloqueo con posterior reintento y la falta de permiso usando un notificador simulado. Falta comprobar el bloqueo real desde Ajustes en el emulador; estas pruebas no sustituyen ese recorrido.
+
+### Comprobación Android del canal de notificaciones
+
+`connectedDebugAndroidTest` aprobado el 21 de octubre: 4 pruebas en Medium Phone API 37. La nueva prueba comprueba la creación y nombre del canal real y, si el permiso o canal están bloqueados en ese momento, comprueba que el notificador rechaza el envío. No modifica permisos ni publica avisos. Al depender de la configuración actual, no demuestra por sí sola ambos escenarios de bloqueo.
+
+La publicación visible, la denegación desde el diálogo y el bloqueo manual del canal siguen pendientes. Las otras tres pruebas verifican los repositorios de perfil, favoritos e imagen.
