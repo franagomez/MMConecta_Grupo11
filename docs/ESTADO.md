@@ -108,3 +108,11 @@ Rama `codex/mensajes-perfil`, basada en `codex/camara-perfil`. Avance parcial de
 - Prioridad del aviso: operación en curso, error de almacenamiento, confirmación y errores del formulario.
 - `testDebugUnitTest assembleDebug`: correcto. No se añadieron pruebas que repliquen la animación.
 - Pendientes: revisión visual en emulador, TalkBack, teclado virtual, texto grande, orientación y revisión de Francisca. La tarea #7 continúa abierta.
+
+## Revisión conjunta de avances
+
+- Rama `codex/revision-avances`: combina `codex/mensajes-perfil` y el avance de Fran `8a0b727` de `codex/camara-perfil`, conservando la historia de ambas. Sin conflictos de Git.
+- `testDebugUnitTest assembleDebug` aprobado el 20 de octubre. Esto verifica compilación y pruebas unitarias existentes; no verifica todavía la entrega real de notificaciones.
+- La rama `feature/catalogo` (7f09142) sigue separada. Su navegación requiere comparación antes de integrarla con el detalle que ya existe.
+- Hallazgo para el siguiente paso: el notificador comprueba POST_NOTIFICATIONS, pero no comprueba si el canal está bloqueado. Puede mostrar “Notificación enviada” aunque Android no la muestre. Pendiente corrección y prueba de canal desactivado.
+- Pendiente recorrido en emulador con permiso concedido/denegado y revisión cruzada. No integrado a main.
