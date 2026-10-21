@@ -116,3 +116,9 @@ Rama `codex/mensajes-perfil`, basada en `codex/camara-perfil`. Avance parcial de
 - La rama `feature/catalogo` (7f09142) sigue separada. Su navegación requiere comparación antes de integrarla con el detalle que ya existe.
 - Hallazgo para el siguiente paso: el notificador comprueba POST_NOTIFICATIONS, pero no comprueba si el canal está bloqueado. Puede mostrar “Notificación enviada” aunque Android no la muestre. Pendiente corrección y prueba de canal desactivado.
 - Pendiente recorrido en emulador con permiso concedido/denegado y revisión cruzada. No integrado a main.
+
+### Corrección del aviso de notificaciones
+
+El notificador consulta si las notificaciones de la app están habilitadas y si el canal Contenido nuevo tiene importancia NONE antes de publicar. En esos casos el ViewModel muestra un mensaje para revisar Ajustes, sin confirmar envío. Se conserva el manejo independiente del permiso POST_NOTIFICATIONS.
+
+Compilación y pruebas unitarias aprobadas. Dos pruebas nuevas comprueban el error por bloqueo con posterior reintento y la falta de permiso usando un notificador simulado. Falta comprobar el bloqueo real desde Ajustes en el emulador; estas pruebas no sustituyen ese recorrido.

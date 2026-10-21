@@ -10,6 +10,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 
+class NotificationsBlockedException : IllegalStateException()
+
 interface ContentNotifier {
     fun notifyNewContent(title: String, message: String)
 }
@@ -42,6 +44,13 @@ class SystemContentNotifier(private val context: Context) : ContentNotifier {
             ) == PackageManager.PERMISSION_GRANTED
             if (!granted) throw SecurityException("Permiso de notificaciones no concedido")
         }
+        val notificationManager = NotificationManagerCompat.from(context)
+        val systemManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channel = systemManager.getNotificationChannel(CHANNEL_ID)
+        if (!notificationManager.areNotificationsEnabled() ||
+            channel?.importance == NotificationManager.IMPORTANCE_NONE) {
+            throw NotificationsBlockedException()
+        }
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle(title)
@@ -49,6 +58,6 @@ class SystemContentNotifier(private val context: Context) : ContentNotifier {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 }

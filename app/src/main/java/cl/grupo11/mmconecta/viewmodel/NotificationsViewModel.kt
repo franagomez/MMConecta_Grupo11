@@ -2,6 +2,7 @@ package cl.grupo11.mmconecta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.grupo11.mmconecta.repository.NotificationsBlockedException
 import cl.grupo11.mmconecta.repository.ContentNotifier
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,8 @@ class NotificationsViewModel(private val notifier: ContentNotifier) : ViewModel(
                 mutableState.update { it.copy(busy = false, message = "Notificación enviada.", isError = false) }
             } catch (error: CancellationException) {
                 throw error
+            } catch (error: NotificationsBlockedException) {
+                mutableState.update { it.copy(busy = false, message = "Las notificaciones de la app o del canal Contenido nuevo están desactivadas. Actívalas en Ajustes para volver a intentarlo.", isError = true) }
             } catch (error: SecurityException) {
                 mutableState.update { it.copy(busy = false, message = "No se pudo enviar: falta el permiso de notificaciones.", isError = true) }
             } catch (error: Exception) {
