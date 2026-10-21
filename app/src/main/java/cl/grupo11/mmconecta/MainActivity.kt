@@ -1,11 +1,15 @@
 package cl.grupo11.mmconecta
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import cl.grupo11.mmconecta.repository.LocalProfilePhotoRepository
+import cl.grupo11.mmconecta.repository.SystemContentNotifier
 import cl.grupo11.mmconecta.viewmodel.ProfilePhotoViewModel
+import cl.grupo11.mmconecta.viewmodel.NotificationsViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import cl.grupo11.mmconecta.repository.LocalProfileRepository
@@ -15,6 +19,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,10 +50,20 @@ class MainActivity : ComponentActivity() {
                 val photoViewModel: ProfilePhotoViewModel = viewModel(factory = viewModelFactory {
                     initializer { ProfilePhotoViewModel(LocalProfilePhotoRepository(filesDir)) }
                 })
+                val notificationsViewModel: NotificationsViewModel = viewModel(factory = viewModelFactory {
+                    initializer { NotificationsViewModel(SystemContentNotifier(applicationContext)) }
+                })
                 val photoState by photoViewModel.uiState.collectAsStateWithLifecycle()
                 val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
                     photoViewModel.onCameraResult(it)
                 }
+                val notificationPermissionLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.RequestPermission()
+                ) { granted ->
+                    if (granted) notificationsViewModel.sendTestNotification()
+                    else notificationsViewModel.permissionDenied()
+                }
+                val notificationsState by notificationsViewModel.uiState.collectAsStateWithLifecycle()
                 val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
                 var showProfile by rememberSaveable { mutableStateOf(false) }
                 val state by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -54,28 +72,47 @@ class MainActivity : ComponentActivity() {
                 BackHandler(enabled = showProfile || selectedContent != null) {
                     if (showProfile) showProfile = false else selectedId = null
                 }
-                if (showProfile) {
-                    ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
-                        profileViewModel::selectBusiness, profileViewModel::toggleInterest,
-                        profileViewModel::save, onBack = { showProfile = false },
-                        photoState = photoState,
-                        onTakePhoto = {
-                            try {
-                                cameraLauncher.launch(null)
-                            } catch (error: ActivityNotFoundException) {
-                                photoViewModel.cameraUnavailable()
-                            } catch (error: SecurityException) {
-                                photoViewModel.cameraUnavailable()
-                            }
-                        })
-                } else if (selectedContent == null) {
-                    HomeScreen(state, homeViewModel::selectCategory,
-                        onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true },
-                        onFavoriteSelected = homeViewModel::toggleFavorite,
-                        onFavoritesFilterChanged = homeViewModel::showFavorites,
-                        onRetryFavorites = homeViewModel::loadFavorites)
-                } else {
-                    ContentDetailScreen(selectedContent, onBack = { selectedId = null })
+                val currentScreen = when {
+                    showProfile -> "profile"
+                    selectedContent != null -> "detail"
+                    else -> "home"
+                }
+                AnimatedContent(
+                    targetState = currentScreen,
+                    label = "screen-transition",
+                    transitionSpec = { fadeIn() togetherWith fadeOut() }
+                ) { screen ->
+                    when (screen) {
+                        "profile" -> ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
+                            profileViewModel::selectBusiness, profileViewModel::toggleInterest,
+                            profileViewModel::save, onBack = { showProfile = false },
+                            photoState = photoState,
+                            onTakePhoto = {
+                                try {
+                                    cameraLauncher.launch(null)
+                                } catch (error: ActivityNotFoundException) {
+                                    photoViewModel.cameraUnavailable()
+                                } catch (error: SecurityException) {
+                                    photoViewModel.cameraUnavailable()
+                                }
+                            })
+                        "detail" -> selectedContent?.let {
+                            ContentDetailScreen(it, onBack = { selectedId = null })
+                        }
+                        else -> HomeScreen(state, homeViewModel::selectCategory,
+                            onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true },
+                            onFavoriteSelected = homeViewModel::toggleFavorite,
+                            onFavoritesFilterChanged = homeViewModel::showFavorites,
+                            onRetryFavorites = homeViewModel::loadFavorites,
+                            notificationsState = notificationsState,
+                            onSendNotification = {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                } else {
+                                    notificationsViewModel.sendTestNotification()
+                                }
+                            })
+                    }
                 }
             }
         }

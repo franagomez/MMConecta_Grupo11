@@ -1,12 +1,16 @@
 package cl.grupo11.mmconecta.ui.home
 
 import cl.grupo11.mmconecta.viewmodel.HomeUiState
+import cl.grupo11.mmconecta.viewmodel.NotificationsUiState
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -14,7 +18,9 @@ import androidx.compose.ui.unit.dp
 fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onContentSelected: (String) -> Unit, onProfileSelected: () -> Unit,
     onFavoriteSelected: (String) -> Unit,
     onFavoritesFilterChanged: (Boolean) -> Unit,
-    onRetryFavorites: () -> Unit
+    onRetryFavorites: () -> Unit,
+    notificationsState: NotificationsUiState,
+    onSendNotification: () -> Unit
 ) {
     Scaffold { padding ->
         LazyColumn(
@@ -63,13 +69,33 @@ fun HomeScreen(state: HomeUiState, onCategorySelected: (String) -> Unit, onConte
                             style = MaterialTheme.typography.labelLarge)
                         Text(content.title, style = MaterialTheme.typography.titleLarge)
                         Text(content.description, style = MaterialTheme.typography.bodyLarge)
+                        val isFavorite = content.id in state.favoriteIds
+                        val favoriteColor by animateColorAsState(
+                            targetValue = if (isFavorite) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.outline,
+                            label = "favorite-color"
+                        )
                         OutlinedButton(
                             enabled = state.favoritesLoaded && !state.favoritesBusy,
-                            onClick = { onFavoriteSelected(content.id) }
+                            onClick = { onFavoriteSelected(content.id) },
+                            border = BorderStroke(1.dp, favoriteColor)
                         ) {
-                            Text(if (content.id in state.favoriteIds) "Quitar de favoritos" else "Guardar en favoritos")
+                            Text(if (isFavorite) "Quitar de favoritos" else "Guardar en favoritos", color = favoriteColor)
                         }
                     }
+                }
+            }
+            item {
+                HorizontalDivider()
+                Text("Notificaciones", style = MaterialTheme.typography.titleMedium)
+                Text("Recibe un aviso de prueba cuando haya contenido nuevo.")
+                OutlinedButton(enabled = !notificationsState.busy, onClick = onSendNotification) {
+                    Text("Probar notificación de contenido nuevo")
+                }
+                if (notificationsState.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                notificationsState.message?.let {
+                    Text(it, color = if (notificationsState.isError) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.primary)
                 }
             }
             item {
