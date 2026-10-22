@@ -14,13 +14,13 @@
 |---|---|---|
 | Arquitectura | Código inicial separado en ui, viewmodel, model, repository | Base ejecutada en equipo de Michel; explicación y ejecución por ambas pendientes |
 | Diseño Material 3 | Pantalla inicial escrita | Ejecución, accesibilidad y adaptación |
-| Navegación | Pendiente | Recorrido y retorno entre pantallas |
-| Formularios | Pendiente | Validaciones, errores y modificación en vivo |
+| Navegación | Navigation Compose de Francisca integrado con detalle, perfil y fundidos; argumentos propios por destino | Pruebas de integración en API 37 registradas en ESTADO.md; revisión cruzada de la versión combinada pendiente |
+| Formularios | Perfil validado; pruebas unitarias correctas | Campos vacíos y guardado válido probados en emulador; guardado de nombre/correo aún no probado por Francisca (requiere ingresar texto); modificación en vivo pendiente |
 | Estado | StateFlow y filtro probados en emulador | Resto de interacciones pendiente |
-| Persistencia | Pendiente | Guardar, recuperar, actualizar y conservar tras reinicio |
-| Cámara | Pendiente | Integración real, contenido de prueba, permisos según implementación, cancelación/denegación |
-| Notificaciones locales | Pendiente | Canal/configuración, permiso según Android, envío visible y denegación |
-| Animaciones | Pendiente | Ejecución y justificación de utilidad |
+| Persistencia | Perfil implementado con repositorio local de preferencias | Perfil recuperado después de Stop/Run en API 37; favoritos probados visualmente y recuperados tras Stop/Run en API 37 y en API 35 (equipo de Francisca); guardado de nombre/correo del perfil aún no verificado por Francisca |
+| Cámara | Implementado y probado (equipo de Francisca, API 35) | Foto tomada y confirmada: imagen guardada y mostrada en el perfil. Cancelación con Volver: se conserva la imagen anterior sin romper la app. Denegación del permiso de cámara aún no probada |
+| Notificaciones locales | Implementadas por Francisca; bloqueo y recuperación revisados en la rama conjunta | API 37: denegación, concesión, publicación visible, canal bloqueado y reintento probados; pendiente revisión cruzada de versión integrada |
+| Animaciones | Implementado y probado (equipo de Francisca, API 35) | AnimatedContent con fundido (fade) entre catálogo, detalle y perfil, probado en navegación Inicio → Perfil → Volver sin romper la app ni el estado de favoritos. Justificación de utilidad: facilita entender el cambio de pantalla a usuarios con bajo manejo digital (caso Master Martini). Observación visual detallada del efecto (grabación) aún pendiente |
 | Colaboración | Reglas documentadas | Cronograma publicado; revisar base compartida y documentar aportes reales de ambas |
 | Defensa | Pendiente | Ambas explican y modifican todo el proyecto sin apoyo durante la evaluación |
 
