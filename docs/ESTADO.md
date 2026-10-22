@@ -143,3 +143,9 @@ Pruebas realizadas el 21 y 22 de octubre en Medium Phone API 37, sobre `codex/re
 Ruta utilizada: panel de notificaciones → ajustes → Notificaciones de las apps → MMConecta → Otras → Contenido nuevo. El canal quedó activado al terminar.
 
 No fue necesario cambiar código durante este recorrido. Se comprobó la publicación visual y la recuperación tras el bloqueo; no se verificaron sonido, lectura hablada con TalkBack, pulsación del aviso ni dispositivos físicos. La revisión cruzada de Francisca y la tarea #6 siguen pendientes de cierre.
+
+### Conservación del detalle durante la transición
+
+La navegación usa destinos `AppScreen` en lugar de cadenas. El destino Detail contiene el LearningContent que se está mostrando: al volver al catálogo, AnimatedContent puede seguir dibujando ese detalle durante fadeOut, aunque selectedId ya se haya limpiado. Antes, el detalle saliente consultaba selectedContent del estado actual y podía quedar vacío de inmediato.
+
+Se mantiene la animación de Fran y el manejo existente de Volver/Atrás. `testDebugUnitTest assembleDebug` aprobado el 22 de octubre. Las pruebas unitarias existentes no verifican fotogramas de animación. Pendiente comprobación visual: abrir una tarjeta, volver con el botón y con Atrás, y verificar que el contenido permanezca durante la salida y que los filtros se conserven.

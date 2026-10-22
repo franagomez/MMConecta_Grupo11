@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.activity.compose.BackHandler
+import cl.grupo11.mmconecta.ui.navigation.AppScreen
 import cl.grupo11.mmconecta.ui.profile.ProfileScreen
 import cl.grupo11.mmconecta.viewmodel.ProfileViewModel
 import cl.grupo11.mmconecta.ui.detail.ContentDetailScreen
@@ -73,9 +74,9 @@ class MainActivity : ComponentActivity() {
                     if (showProfile) showProfile = false else selectedId = null
                 }
                 val currentScreen = when {
-                    showProfile -> "profile"
-                    selectedContent != null -> "detail"
-                    else -> "home"
+                    showProfile -> AppScreen.Profile
+                    selectedContent != null -> AppScreen.Detail(selectedContent)
+                    else -> AppScreen.Home
                 }
                 AnimatedContent(
                     targetState = currentScreen,
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
                     transitionSpec = { fadeIn() togetherWith fadeOut() }
                 ) { screen ->
                     when (screen) {
-                        "profile" -> ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
+                        AppScreen.Profile -> ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
                             profileViewModel::selectBusiness, profileViewModel::toggleInterest,
                             profileViewModel::save, onBack = { showProfile = false },
                             photoState = photoState,
@@ -96,10 +97,10 @@ class MainActivity : ComponentActivity() {
                                     photoViewModel.cameraUnavailable()
                                 }
                             })
-                        "detail" -> selectedContent?.let {
-                            ContentDetailScreen(it, onBack = { selectedId = null })
-                        }
-                        else -> HomeScreen(state, homeViewModel::selectCategory,
+                        is AppScreen.Detail -> ContentDetailScreen(
+                            screen.content, onBack = { selectedId = null }
+                        )
+                        AppScreen.Home -> HomeScreen(state, homeViewModel::selectCategory,
                             onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true },
                             onFavoriteSelected = homeViewModel::toggleFavorite,
                             onFavoritesFilterChanged = homeViewModel::showFavorites,
