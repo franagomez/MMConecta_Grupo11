@@ -149,3 +149,19 @@ No fue necesario cambiar código durante este recorrido. Se comprobó la publica
 La navegación usa destinos `AppScreen` en lugar de cadenas. El destino Detail contiene el LearningContent que se está mostrando: al volver al catálogo, AnimatedContent puede seguir dibujando ese detalle durante fadeOut, aunque selectedId ya se haya limpiado. Antes, el detalle saliente consultaba selectedContent del estado actual y podía quedar vacío de inmediato.
 
 Se mantiene la animación de Fran y el manejo existente de Volver/Atrás. `testDebugUnitTest assembleDebug` aprobado el 22 de octubre. Las pruebas unitarias existentes no verifican fotogramas de animación. Pendiente comprobación visual: abrir una tarjeta, volver con el botón y con Atrás, y verificar que el contenido permanezca durante la salida y que los filtros se conserven.
+
+## Integración de las ramas publicadas
+
+Revisión del 22 de octubre. `codex/revision-avances` reúne los avances publicados de Michel y Francisca, incluida `feature/catalogo` (7f09142). El merge conserva los commits y sus autores originales.
+
+- Se adopta Navigation Compose de Francisca para catálogo, detalle y perfil. Los destinos de detalle mantienen su propio argumento durante la salida; esto sustituye el AppScreen temporal sin volver a depender de una selección global que se borra.
+- Se conserva ContentDetailScreen como única pantalla de detalle, con pasos, desplazamiento y aviso de contenido académico. Se incorpora el estado “No se encontró el contenido” de la alternativa de Francisca. Se elimina la pantalla duplicada y se conserva una sola búsqueda de contenido en HomeViewModel.
+- Se mantienen perfil y validaciones, favoritos y filtros, persistencia local, cámara, notificaciones y sus correcciones. Los ViewModels permanecen fuera de los destinos para conservar el estado durante la navegación.
+- Las transiciones de fundido se configuran en NavHost, incluido el regreso. Se evita abrir destinos duplicados mediante launchSingleTop.
+- README actualizado con las funciones actuales y los pasos para traer la rama integrada.
+
+Validación: compilación y 16 pruebas unitarias aprobadas; 7 pruebas Android aprobadas en Medium Phone API 37 (4 de repositorios y 3 nuevas de navegación). Las pruebas nuevas cubren botón Volver y dispatcher Atrás conservando categoría, recreación de actividad en detalle y borrador del perfil al volver/recrear sin guardarlo. Recreación de actividad no equivale a muerte del proceso.
+
+La primera ejecución detectó incompatibilidad de Espresso antiguo con API 37. Se actualizaron únicamente las dependencias de pruebas a Runner 1.7.0, JUnit 1.3.0 y Espresso 3.7.0; la corrección de InputManager está descrita en las [notas oficiales de AndroidX Test](https://developer.android.com/jetpack/androidx/releases/test). La segunda ejecución mostró que la prueba enviaba Atrás antes de que el destino estuviera listo; se corrigió la sincronización con runOnIdle y una comprobación del detalle antes de volver. La ejecución final pasó completa.
+
+La integración técnica está preparada en una sola rama. Falta la revisión cruzada humana antes del merge a main según el protocolo del equipo. No se atribuye a Francisca una revisión que todavía no ha realizado ni se declara cerrada la rúbrica completa. Siguen pendientes las pruebas amplias de accesibilidad, texto grande, dispositivos físicos y la defensa individual.

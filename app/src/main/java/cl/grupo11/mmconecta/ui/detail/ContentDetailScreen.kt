@@ -11,12 +11,18 @@ import cl.grupo11.mmconecta.model.LearningContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentDetailScreen(content: LearningContent, onBack: () -> Unit) {
+fun ContentDetailScreen(content: LearningContent?, onBack: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Contenido") }, navigationIcon = {
             TextButton(onClick = onBack) { Text("Volver") }
         })
     }) { padding ->
+        if (content == null) {
+            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) {
+                Text("No se encontró el contenido.")
+            }
+            return@Scaffold
+        }
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
             contentPadding = PaddingValues(24.dp),

@@ -1,5 +1,11 @@
 package cl.grupo11.mmconecta
 
+import android.net.Uri
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
@@ -19,16 +25,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.activity.compose.BackHandler
-import cl.grupo11.mmconecta.ui.navigation.AppScreen
 import cl.grupo11.mmconecta.ui.profile.ProfileScreen
 import cl.grupo11.mmconecta.viewmodel.ProfileViewModel
 import cl.grupo11.mmconecta.ui.detail.ContentDetailScreen
@@ -66,27 +65,20 @@ class MainActivity : ComponentActivity() {
                 }
                 val notificationsState by notificationsViewModel.uiState.collectAsStateWithLifecycle()
                 val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
-                var showProfile by rememberSaveable { mutableStateOf(false) }
                 val state by homeViewModel.uiState.collectAsStateWithLifecycle()
-                var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
-                val selectedContent = homeViewModel.findContent(selectedId)
-                BackHandler(enabled = showProfile || selectedContent != null) {
-                    if (showProfile) showProfile = false else selectedId = null
-                }
-                val currentScreen = when {
-                    showProfile -> AppScreen.Profile
-                    selectedContent != null -> AppScreen.Detail(selectedContent)
-                    else -> AppScreen.Home
-                }
-                AnimatedContent(
-                    targetState = currentScreen,
-                    label = "screen-transition",
-                    transitionSpec = { fadeIn() togetherWith fadeOut() }
-                ) { screen ->
-                    when (screen) {
-                        AppScreen.Profile -> ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = "home",
+                    enterTransition = { fadeIn() },
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { fadeOut() }
+                ) {
+                    composable("profile") {
+                        ProfileScreen(profileState, profileViewModel::changeName, profileViewModel::changeEmail,
                             profileViewModel::selectBusiness, profileViewModel::toggleInterest,
-                            profileViewModel::save, onBack = { showProfile = false },
+                            profileViewModel::save, onBack = { navController.popBackStack() },
                             photoState = photoState,
                             onTakePhoto = {
                                 try {
@@ -97,11 +89,20 @@ class MainActivity : ComponentActivity() {
                                     photoViewModel.cameraUnavailable()
                                 }
                             })
-                        is AppScreen.Detail -> ContentDetailScreen(
-                            screen.content, onBack = { selectedId = null }
+                    }
+                    composable(
+                        route = "detalle/{contentId}",
+                        arguments = listOf(navArgument("contentId") { type = NavType.StringType })
+                    ) { entry ->
+                        ContentDetailScreen(
+                            homeViewModel.findContent(entry.arguments?.getString("contentId")),
+                            onBack = { navController.popBackStack() }
                         )
-                        AppScreen.Home -> HomeScreen(state, homeViewModel::selectCategory,
-                            onContentSelected = { selectedId = it }, onProfileSelected = { showProfile = true },
+                    }
+                    composable("home") {
+                        HomeScreen(state, homeViewModel::selectCategory,
+                            onContentSelected = { navController.navigate("detalle/${Uri.encode(it)}") { launchSingleTop = true } },
+                            onProfileSelected = { navController.navigate("profile") { launchSingleTop = true } },
                             onFavoriteSelected = homeViewModel::toggleFavorite,
                             onFavoritesFilterChanged = homeViewModel::showFavorites,
                             onRetryFavorites = homeViewModel::loadFavorites,
