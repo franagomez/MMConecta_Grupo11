@@ -128,3 +128,18 @@ Compilación y pruebas unitarias aprobadas. Dos pruebas nuevas comprueban el err
 `connectedDebugAndroidTest` aprobado el 21 de octubre: 4 pruebas en Medium Phone API 37. La nueva prueba comprueba la creación y nombre del canal real y, si el permiso o canal están bloqueados en ese momento, comprueba que el notificador rechaza el envío. No modifica permisos ni publica avisos. Al depender de la configuración actual, no demuestra por sí sola ambos escenarios de bloqueo.
 
 La publicación visible, la denegación desde el diálogo y el bloqueo manual del canal siguen pendientes. Las otras tres pruebas verifican los repositorios de perfil, favoritos e imagen.
+
+### Recorrido manual de notificaciones
+
+Pruebas realizadas el 21 y 22 de octubre en Medium Phone API 37, sobre `codex/revision-avances` (1969025). Completan los pendientes manuales del apartado anterior.
+
+| Caso | Resultado observado |
+| --- | --- |
+| Denegar el permiso desde el diálogo Android | La app muestra permiso denegado y permite volver a intentarlo. |
+| Conceder el permiso y enviar | Aparece “Notificación enviada.” y el panel de Android muestra “Nuevo contenido en MMConecta” con el texto de la receta. |
+| Desactivar solo Contenido nuevo, manteniendo habilitadas las notificaciones de la app | Al pulsar el botón de prueba aparece el aviso de canal desactivado; no aparece una confirmación de envío. |
+| Reactivar Contenido nuevo y reintentar sin reiniciar la app | El error se reemplaza por “Notificación enviada.” y reaparece el icono de notificación en la barra de Android. |
+
+Ruta utilizada: panel de notificaciones → ajustes → Notificaciones de las apps → MMConecta → Otras → Contenido nuevo. El canal quedó activado al terminar.
+
+No fue necesario cambiar código durante este recorrido. Se comprobó la publicación visual y la recuperación tras el bloqueo; no se verificaron sonido, lectura hablada con TalkBack, pulsación del aviso ni dispositivos físicos. La revisión cruzada de Francisca y la tarea #6 siguen pendientes de cierre.
