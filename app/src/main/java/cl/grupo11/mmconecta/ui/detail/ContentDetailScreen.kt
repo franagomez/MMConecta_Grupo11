@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.grupo11.mmconecta.model.LearningContent
@@ -29,9 +31,9 @@ fun ContentDetailScreen(content: LearningContent?, onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item { Text(content.category, color = MaterialTheme.colorScheme.primary) }
-            item { Text(content.title, style = MaterialTheme.typography.headlineMedium) }
+            item { Text(content.title, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.semantics { heading() }) }
             item { Text(content.description, style = MaterialTheme.typography.bodyLarge) }
-            item { Text("Para comenzar", style = MaterialTheme.typography.titleLarge) }
+            item { Text("Para comenzar", style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() }) }
             itemsIndexed(content.steps) { index, step ->
                 Text("${index + 1}. $step", style = MaterialTheme.typography.bodyLarge)
             }

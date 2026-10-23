@@ -165,3 +165,17 @@ Validación: compilación y 16 pruebas unitarias aprobadas; 7 pruebas Android ap
 La primera ejecución detectó incompatibilidad de Espresso antiguo con API 37. Se actualizaron únicamente las dependencias de pruebas a Runner 1.7.0, JUnit 1.3.0 y Espresso 3.7.0; la corrección de InputManager está descrita en las [notas oficiales de AndroidX Test](https://developer.android.com/jetpack/androidx/releases/test). La segunda ejecución mostró que la prueba enviaba Atrás antes de que el destino estuviera listo; se corrigió la sincronización con runOnIdle y una comprobación del detalle antes de volver. La ejecución final pasó completa.
 
 La integración técnica está preparada en una sola rama. Falta la revisión cruzada humana antes del merge a main según el protocolo del equipo. No se atribuye a Francisca una revisión que todavía no ha realizado ni se declara cerrada la rúbrica completa. Siguen pendientes las pruebas amplias de accesibilidad, texto grande, dispositivos físicos y la defensa individual.
+
+## Adaptación del detalle y encabezados
+
+Revisión del 23 de octubre: los títulos del contenido y “Para comenzar” incluyen semántica de encabezado, para permitir navegación por secciones con lectores de pantalla.
+
+Nuevas pruebas Android:
+
+- Detalle con descripción larga en un área de 320 × 480 dp y fontScale 2 dentro de la composición de prueba: permite desplazarse hasta el último paso y activar Volver. Comprueba también los encabezados semánticos. No cambia el tamaño de letra del sistema.
+- Contenido inexistente: muestra el mensaje correspondiente y permite volver.
+- Giro real de la actividad a horizontal desde el detalle: conserva el destino, permite acceder a los pasos y volver al catálogo. Restaura requestedOrientation al finalizar.
+
+Estas comprobaciones no sustituyen la inspección visual de todas las pantallas, la lectura hablada con TalkBack ni las pruebas en un teléfono físico.
+
+Resultado: compilación y 16 pruebas unitarias aprobadas; ejecución final de 10 pruebas Android aprobada en API 37. Se corrigió el desplazamiento de la prueba para buscar nodos todavía no compuestos en la lista; no fue un fallo de navegación de la app.

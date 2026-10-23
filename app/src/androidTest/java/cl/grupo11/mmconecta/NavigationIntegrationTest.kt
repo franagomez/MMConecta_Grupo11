@@ -40,4 +40,23 @@ class NavigationIntegrationTest {
         compose.runOnIdle { compose.activity.onBackPressedDispatcher.onBackPressed() }
         compose.onNodeWithText("MMConecta").assertExists()
     }
+    @Test fun detailSurvivesLandscapeRotation() {
+        compose.onNodeWithText("Primeros pasos en chocolatería").performScrollTo().performClick()
+        compose.onNodeWithText("Para comenzar").assertExists()
+        val original = compose.activity.requestedOrientation
+        try {
+            compose.runOnIdle {
+                compose.activity.requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+            compose.waitUntil(10_000) {
+                compose.activity.resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            }
+            compose.onNodeWithText("Para comenzar").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Volver").performClick()
+            compose.onNodeWithText("Mi perfil").performScrollTo().assertIsDisplayed()
+        } finally {
+            compose.runOnIdle { compose.activity.requestedOrientation = original }
+        }
+    }
+
 }
