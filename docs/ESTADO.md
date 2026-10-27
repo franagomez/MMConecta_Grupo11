@@ -179,3 +179,11 @@ Nuevas pruebas Android:
 Estas comprobaciones no sustituyen la inspección visual de todas las pantallas, la lectura hablada con TalkBack ni las pruebas en un teléfono físico.
 
 Resultado: compilación y 16 pruebas unitarias aprobadas; ejecución final de 10 pruebas Android aprobada en API 37. Se corrigió el desplazamiento de la prueba para buscar nodos todavía no compuestos en la lista; no fue un fallo de navegación de la app.
+
+## Apertura desde notificaciones — 27 de octubre
+
+La notificación local incorpora un PendingIntent inmutable dirigido a MainActivity. Al tocarla puede abrir MMConecta y se configura su eliminación automática. Si la actividad ya está abierta, se reutiliza; no se incorpora navegación a una receta concreta.
+
+Validación: compilación y 16 pruebas unitarias aprobadas; 11 pruebas Android aprobadas en API 37. La nueva prueba publica un aviso y verifica título, texto, acción asociada al paquete de la app y marca de eliminación automática. Concede el permiso de notificaciones durante la prueba y limpia el aviso al finalizar. La primera ejecución consultó la publicación demasiado pronto; se añadió una espera acotada de cinco segundos y la ejecución completa pasó.
+
+Pendiente: tocar el aviso desde la bandeja, con la app en segundo plano y cerrada, para verificar visualmente la apertura. La prueba automatizada comprueba la acción configurada, pero no realiza ese toque. Se mantiene pendiente la revisión cruzada antes de integrar a main.

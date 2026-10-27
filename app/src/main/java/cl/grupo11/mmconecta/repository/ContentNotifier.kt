@@ -1,6 +1,9 @@
 package cl.grupo11.mmconecta.repository
 
 import android.Manifest
+import android.app.PendingIntent
+import android.content.Intent
+import cl.grupo11.mmconecta.MainActivity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -51,11 +54,20 @@ class SystemContentNotifier(private val context: Context) : ContentNotifier {
             channel?.importance == NotificationManager.IMPORTANCE_NONE) {
             throw NotificationsBlockedException()
         }
+        val openApp = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(openApp)
             .setAutoCancel(true)
             .build()
         notificationManager.notify(NOTIFICATION_ID, notification)
