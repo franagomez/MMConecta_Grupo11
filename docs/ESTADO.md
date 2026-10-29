@@ -187,3 +187,13 @@ La notificación local incorpora un PendingIntent inmutable dirigido a MainActiv
 Validación: compilación y 16 pruebas unitarias aprobadas; 11 pruebas Android aprobadas en API 37. La nueva prueba publica un aviso y verifica título, texto, acción asociada al paquete de la app y marca de eliminación automática. Concede el permiso de notificaciones durante la prueba y limpia el aviso al finalizar. La primera ejecución consultó la publicación demasiado pronto; se añadió una espera acotada de cinco segundos y la ejecución completa pasó.
 
 Pendiente: tocar el aviso desde la bandeja, con la app en segundo plano y cerrada, para verificar visualmente la apertura. La prueba automatizada comprueba la acción configurada, pero no realiza ese toque. Se mantiene pendiente la revisión cruzada antes de integrar a main.
+
+## Formulario y acciones del teclado — 29 de octubre
+
+Nombre ofrece la acción Siguiente y transfiere el foco a Correo. Correo mantiene su tipo de teclado de email y ofrece Listo, que cierra la entrada sin guardar. Guardar perfil cierra el teclado y llama al flujo de validación y persistencia existente. Ambos campos se componen juntos para que el destino del foco esté disponible en la lista. Se conserva imePadding y el desplazamiento del formulario.
+
+La prueba nueva comprueba el cambio de foco, conservación del borrador, ausencia de guardado automático y acceso a Guardar. No comprueba el dibujo ni el idioma de las teclas del proveedor de teclado.
+
+Validación: compilación y 16 pruebas unitarias aprobadas. En la ejecución Android, las 11 pruebas previas pasaron; la nueva falló por buscar Guardar antes de componer ese elemento de LazyColumn. Se corrigió únicamente el desplazamiento de la prueba mediante performScrollToNode y la repetición individual pasó en API 37. No se repitió la suite completa después de ese ajuste de prueba.
+
+En el emulador local se verificó show_ime_with_hard_keyboard=0 y se cambió a 1 para permitir teclado virtual junto al teclado del Mac. La nueva prueba pasó con esa configuración. Es una preferencia del emulador, no un cambio de configuración que se distribuya con la app. Pendiente inspección visual manual del teclado y pruebas en teléfono físico.

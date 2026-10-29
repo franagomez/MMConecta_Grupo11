@@ -8,6 +8,22 @@ import org.junit.Test
 class NavigationIntegrationTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
 
+    @Test fun profileKeyboardMovesToEmailAndDoneKeepsDraft() {
+        compose.onNodeWithText("Mi perfil").performClick()
+        compose.onNodeWithText("Nombre").performScrollTo().performClick()
+        compose.onNodeWithText("Nombre").performTextReplacement("Prueba teclado")
+        compose.onNodeWithText("Nombre").performImeAction()
+        compose.onNodeWithText("Correo").assertIsFocused()
+        compose.onNodeWithText("Correo").performTextReplacement("teclado@example.com")
+        compose.onNodeWithText("Correo").performImeAction()
+        compose.onNodeWithText("Correo").assertIsNotFocused()
+        compose.onNodeWithText("Prueba teclado").assertExists()
+        compose.onNodeWithText("teclado@example.com").assertExists()
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Guardar perfil"))
+        compose.onNodeWithText("Guardar perfil").assertIsDisplayed().assertIsEnabled()
+        compose.onNodeWithText("Perfil guardado en este dispositivo.").assertDoesNotExist()
+    }
+
     @Test fun detailReturnsToSelectedCategoryWithButtonAndSystemBack() {
         compose.onNode(hasText("Chocolatería") and isSelectable()).performClick()
         compose.onNodeWithText("Primeros pasos en chocolatería").performScrollTo().performClick()

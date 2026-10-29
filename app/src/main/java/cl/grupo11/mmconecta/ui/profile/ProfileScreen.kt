@@ -6,6 +6,14 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.material3.*
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -35,6 +43,14 @@ fun ProfileScreen(
     photoState: ProfilePhotoUiState,
     onTakePhoto: () -> Unit
 ) {
+    val emailFocus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    fun finishTyping() {
+        keyboard?.hide()
+        focusManager.clearFocus()
+    }
+
     Scaffold(topBar = {
         TopAppBar(title = { Text("Mi perfil") },
             navigationIcon = { TextButton(onClick = onBack) { Text("Volver") } })
@@ -63,13 +79,15 @@ fun ProfileScreen(
             item {
                 OutlinedTextField(value = state.draft.name, onValueChange = onNameChanged,
                     enabled = !state.busy, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() }),
                     isError = state.errors.name != null,
                     supportingText = { state.errors.name?.let { Text(it) } })
-            }
-            item {
+                Spacer(Modifier.height(16.dp))
                 OutlinedTextField(value = state.draft.email, onValueChange = onEmailChanged,
-                    enabled = !state.busy, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    enabled = !state.busy, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth().focusRequester(emailFocus),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { finishTyping() }),
                     isError = state.errors.email != null,
                     supportingText = { state.errors.email?.let { Text(it) } })
             }
@@ -93,7 +111,7 @@ fun ProfileScreen(
                 state.errors.interests?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
             item {
-                Button(enabled = !state.busy, onClick = onSave, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
+                Button(enabled = !state.busy, onClick = { finishTyping(); onSave() }, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
                 if (state.busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 val message = when {
                     state.busy -> "Procesando perfil…"
