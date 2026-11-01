@@ -197,3 +197,13 @@ La prueba nueva comprueba el cambio de foco, conservación del borrador, ausenci
 Validación: compilación y 16 pruebas unitarias aprobadas. En la ejecución Android, las 11 pruebas previas pasaron; la nueva falló por buscar Guardar antes de componer ese elemento de LazyColumn. Se corrigió únicamente el desplazamiento de la prueba mediante performScrollToNode y la repetición individual pasó en API 37. No se repitió la suite completa después de ese ajuste de prueba.
 
 En el emulador local se verificó show_ime_with_hard_keyboard=0 y se cambió a 1 para permitir teclado virtual junto al teclado del Mac. La nueva prueba pasó con esa configuración. Es una preferencia del emulador, no un cambio de configuración que se distribuya con la app. Pendiente inspección visual manual del teclado y pruebas en teléfono físico.
+
+## Adaptabilidad y revisión de integración — 1 de noviembre de 2026
+
+Siguiendo la Guía 9, HomeScreen calcula Window Size Classes sobre el espacio disponible: catálogo de una, dos o tres columnas según ancho compacto, mediano o expandido. Con fontScale >= 1,5 vuelve a una columna. Perfil y detalle centran el contenido y limitan su ancho a 840 dp, manteniendo desplazamiento y ajuste al teclado. Se utiliza material3-window-size-class bajo el BOM existente.
+
+Validación: assembleDebug y 16 pruebas unitarias aprobadas; 13 pruebas Android aprobadas en API 37. La nueva prueba verifica posiciones de tarjetas al cambiar entre 400, 700 y 1000 dp, y el retorno a una columna al aumentar la escala de texto. Usa dimensiones de prueba dentro de Compose; no sustituye una comprobación visual en tablet física. La suite completa incluye las pruebas del teclado, navegación, giro y persistencia existentes.
+
+Se ejecutó fetch explícito de todas las ramas publicadas. Todas sus puntas son antecesoras del HEAD integrado. Los commits publicados de Francisca 7f09142 (navegación/detalle) y 8a0b727 (notificaciones/animaciones) ya están incluidos y mantienen su autoría. No hay otra rama publicada con cambios pendientes de incorporar. No se puede afirmar lo mismo de trabajo aún no subido desde otro computador.
+
+PR #12 abierto, sin revisión registrada al consultar. Se añade CIERRE_ENTREGA.md para separar implementación y comprobaciones pendientes. No se declara terminada la evaluación: falta la rúbrica detallada EP2, revisión cruzada, comprobaciones manuales y defensa individual.

@@ -85,3 +85,9 @@ Sincronizar Gradle y ejecutar `app`. No hace falta copiar archivos de otra rama.
 ```
 
 El segundo comando requiere un emulador o dispositivo conectado. Las pruebas de navegación usan datos ficticios y no guardan el borrador del perfil. Los avisos locales se prueban desde el botón al final del catálogo; el canal Contenido nuevo debe estar habilitado.
+
+## Adaptación y cierre
+
+El catálogo usa Window Size Classes: una columna en ancho compacto, dos en mediano y tres en expandido. Con escala de texto de 1,5 o mayor conserva una sola columna. Perfil y detalle limitan su ancho a 840 dp y siguen siendo desplazables.
+
+El formulario ofrece Siguiente y Listo. Listo termina la edición sin guardar; Guardar valida y persiste. Para la revisión final consultar [CIERRE_ENTREGA.md](docs/CIERRE_ENTREGA.md), que distingue pruebas realizadas de comprobaciones pendientes.

@@ -52,77 +52,79 @@ fun ProfileScreen(
     }
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Mi perfil") },
+            TopAppBar(title = { Text("Mi perfil") },
             navigationIcon = { TextButton(onClick = onBack) { Text("Volver") } })
-    }) { padding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).imePadding(),
-            contentPadding = PaddingValues(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                Text("Imagen de prueba (opcional)", style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.semantics { heading() })
-                photoState.photo?.let {
-                    Image(bitmap = it.asImageBitmap(), contentDescription = "Imagen guardada del perfil",
-                        modifier = Modifier.size(120.dp), contentScale = ContentScale.Fit)
+        }) { padding ->
+        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.TopCenter) {
+            LazyColumn(
+                modifier = Modifier.widthIn(max = 840.dp).fillMaxSize().imePadding(),
+                contentPadding = PaddingValues(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    Text("Imagen de prueba (opcional)", style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.semantics { heading() })
+                    photoState.photo?.let {
+                        Image(bitmap = it.asImageBitmap(), contentDescription = "Imagen guardada del perfil",
+                            modifier = Modifier.size(120.dp), contentScale = ContentScale.Fit)
+                    }
+                    OutlinedButton(enabled = !photoState.busy, onClick = onTakePhoto) {
+                        Text(if (photoState.photo == null) "Tomar imagen de prueba" else "Cambiar imagen")
+                    }
+                    if (photoState.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                    ProfileFeedback(photoState.message, photoState.isError)
+                    Text("Usa un objeto de prueba sin datos personales. La imagen se guarda al confirmar la captura.",
+                        style = MaterialTheme.typography.bodySmall)
                 }
-                OutlinedButton(enabled = !photoState.busy, onClick = onTakePhoto) {
-                    Text(if (photoState.photo == null) "Tomar imagen de prueba" else "Cambiar imagen")
+                item { Text("Prueba con datos ficticios. Los campos siguientes son obligatorios.") }
+                item {
+                    OutlinedTextField(value = state.draft.name, onValueChange = onNameChanged,
+                        enabled = !state.busy, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() }),
+                        isError = state.errors.name != null,
+                        supportingText = { state.errors.name?.let { Text(it) } })
+                    Spacer(Modifier.height(16.dp))
+                    OutlinedTextField(value = state.draft.email, onValueChange = onEmailChanged,
+                        enabled = !state.busy, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth().focusRequester(emailFocus),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { finishTyping() }),
+                        isError = state.errors.email != null,
+                        supportingText = { state.errors.email?.let { Text(it) } })
                 }
-                if (photoState.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
-                ProfileFeedback(photoState.message, photoState.isError)
-                Text("Usa un objeto de prueba sin datos personales. La imagen se guarda al confirmar la captura.",
-                    style = MaterialTheme.typography.bodySmall)
-            }
-            item { Text("Prueba con datos ficticios. Los campos siguientes son obligatorios.") }
-            item {
-                OutlinedTextField(value = state.draft.name, onValueChange = onNameChanged,
-                    enabled = !state.busy, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() }),
-                    isError = state.errors.name != null,
-                    supportingText = { state.errors.name?.let { Text(it) } })
-                Spacer(Modifier.height(16.dp))
-                OutlinedTextField(value = state.draft.email, onValueChange = onEmailChanged,
-                    enabled = !state.busy, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth().focusRequester(emailFocus),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { finishTyping() }),
-                    isError = state.errors.email != null,
-                    supportingText = { state.errors.email?.let { Text(it) } })
-            }
-            item {
-                Text("Tipo de negocio", style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.semantics { heading() })
-                businessOptions.forEach { option ->
-                    FilterChip(enabled = !state.busy, selected = state.draft.business == option,
-                        onClick = { onBusinessSelected(option) }, label = { Text(option) })
+                item {
+                    Text("Tipo de negocio", style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.semantics { heading() })
+                    businessOptions.forEach { option ->
+                        FilterChip(enabled = !state.busy, selected = state.draft.business == option,
+                            onClick = { onBusinessSelected(option) }, label = { Text(option) })
+                    }
+                    state.errors.business?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 }
-                state.errors.business?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            }
-            item {
-                Text("Tus intereses", style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.semantics { heading() })
-                Text("Puedes elegir más de uno.")
-                interestOptions.forEach { option ->
-                    FilterChip(enabled = !state.busy, selected = option in state.draft.interests,
-                        onClick = { onInterestSelected(option) }, label = { Text(option) })
+                item {
+                    Text("Tus intereses", style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.semantics { heading() })
+                    Text("Puedes elegir más de uno.")
+                    interestOptions.forEach { option ->
+                        FilterChip(enabled = !state.busy, selected = option in state.draft.interests,
+                            onClick = { onInterestSelected(option) }, label = { Text(option) })
+                    }
+                    state.errors.interests?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 }
-                state.errors.interests?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            }
-            item {
-                Button(enabled = !state.busy, onClick = { finishTyping(); onSave() }, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
-                if (state.busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                val message = when {
-                    state.busy -> "Procesando perfil…"
-                    state.storageError != null -> state.storageError
-                    state.saved -> "Perfil guardado en este dispositivo."
-                    state.submitted && !state.errors.isValid -> "Revisa los campos indicados arriba."
-                    else -> null
+                item {
+                    Button(enabled = !state.busy, onClick = { finishTyping(); onSave() }, modifier = Modifier.fillMaxWidth()) { Text("Guardar perfil") }
+                    if (state.busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    val message = when {
+                        state.busy -> "Procesando perfil…"
+                        state.storageError != null -> state.storageError
+                        state.saved -> "Perfil guardado en este dispositivo."
+                        state.submitted && !state.errors.isValid -> "Revisa los campos indicados arriba."
+                        else -> null
+                    }
+                    ProfileFeedback(message, state.storageError != null || (state.submitted && !state.errors.isValid))
+                    Text("Los cambios se conservan al cerrar la app después de pulsar Guardar perfil.",
+                        style = MaterialTheme.typography.bodySmall)
                 }
-                ProfileFeedback(message, state.storageError != null || (state.submitted && !state.errors.isValid))
-                Text("Los cambios se conservan al cerrar la app después de pulsar Guardar perfil.",
-                    style = MaterialTheme.typography.bodySmall)
             }
         }
     }

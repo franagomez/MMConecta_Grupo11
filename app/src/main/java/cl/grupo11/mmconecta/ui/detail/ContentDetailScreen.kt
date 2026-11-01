@@ -15,31 +15,33 @@ import cl.grupo11.mmconecta.model.LearningContent
 @Composable
 fun ContentDetailScreen(content: LearningContent?, onBack: () -> Unit) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Contenido") }, navigationIcon = {
-            TextButton(onClick = onBack) { Text("Volver") }
-        })
-    }) { padding ->
+            TopAppBar(title = { Text("Contenido") }, navigationIcon = {
+                TextButton(onClick = onBack) { Text("Volver") }
+            })
+        }) { padding ->
         if (content == null) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) {
                 Text("No se encontró el contenido.")
             }
             return@Scaffold
         }
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item { Text(content.category, color = MaterialTheme.colorScheme.primary) }
-            item { Text(content.title, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.semantics { heading() }) }
-            item { Text(content.description, style = MaterialTheme.typography.bodyLarge) }
-            item { Text("Para comenzar", style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() }) }
-            itemsIndexed(content.steps) { index, step ->
-                Text("${index + 1}. $step", style = MaterialTheme.typography.bodyLarge)
-            }
-            item {
-                Text("Contenido de demostración para el prototipo académico. No corresponde a material oficial de Master Martini.",
-                    style = MaterialTheme.typography.bodySmall)
+        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.TopCenter) {
+            LazyColumn(
+                modifier = Modifier.widthIn(max = 840.dp).fillMaxSize(),
+                contentPadding = PaddingValues(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item { Text(content.category, color = MaterialTheme.colorScheme.primary) }
+                item { Text(content.title, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.semantics { heading() }) }
+                item { Text(content.description, style = MaterialTheme.typography.bodyLarge) }
+                item { Text("Para comenzar", style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() }) }
+                itemsIndexed(content.steps) { index, step ->
+                    Text("${index + 1}. $step", style = MaterialTheme.typography.bodyLarge)
+                }
+                item {
+                    Text("Contenido de demostración para el prototipo académico. No corresponde a material oficial de Master Martini.",
+                        style = MaterialTheme.typography.bodySmall)
+                }
             }
         }
     }
