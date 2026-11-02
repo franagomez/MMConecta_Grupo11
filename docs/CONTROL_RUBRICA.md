@@ -5,7 +5,7 @@
 - Caso Master Martini: leído completo. MVP académico accesible y adaptable, datos ficticios/sintéticos/anonimizados, materiales autorizados, permisos probados sin capturar datos reales.
 - PDF EP3: leído completo; defensa individual, arquitectura, diseño, formularios, estado, animaciones, persistencia, recursos nativos y cambios en vivo.
 - Captura EP2: requisitos generales conocidos. Rúbrica detallada todavía no recibida.
-- Guía 7: todavía no recibida. El usuario comunica que requiere ui/, viewmodel/, model/ y repository/ opcional. La base se ajustó a esa organización.
+- Guías 7–11: recibidas y contrastadas. La Guía 7 pide MVVM; la 9 aborda Window Size Classes; la 10 navegación; la 11 formulario con ViewModel. Las diferencias con los ejercicios y los pendientes se registran en CIERRE_ENTREGA.md.
 - Mínimo dos recursos nativos: comunicado por el usuario a partir de revisión de su compañera. Se adopta como alcance del proyecto (cámara + notificaciones); atribución exacta a la rúbrica pendiente de verificación. El PDF EP3 disponible no fija expresamente un número mínimo.
 
 ## Estado verificable
@@ -13,17 +13,21 @@
 | Área | Estado | Evidencia pendiente |
 |---|---|---|
 | Arquitectura | Código inicial separado en ui, viewmodel, model, repository | Base ejecutada en equipo de Michel; explicación y ejecución por ambas pendientes |
-| Diseño Material 3 | Pantalla inicial escrita | Ejecución, accesibilidad y adaptación |
-| Navegación | Pendiente | Recorrido y retorno entre pantallas |
-| Formularios | Pendiente | Validaciones, errores y modificación en vivo |
+| Diseño Material 3 | Catálogo, perfil y detalle implementados; catálogo con Window Size Classes | Validación visual en tablet y teléfono, accesibilidad completa |
+| Navegación | Navigation Compose de Francisca integrado con detalle, perfil y fundidos; argumentos propios por destino | Pruebas de integración en API 37 registradas en ESTADO.md; revisión cruzada de la versión combinada pendiente |
+| Formularios | Perfil validado; pruebas unitarias correctas | Campos vacíos y guardado válido probados en emulador; guardado de nombre/correo aún no probado por Francisca (requiere ingresar texto); modificación en vivo pendiente |
 | Estado | StateFlow y filtro probados en emulador | Resto de interacciones pendiente |
-| Persistencia | Pendiente | Guardar, recuperar, actualizar y conservar tras reinicio |
-| Cámara | Pendiente | Integración real, contenido de prueba, permisos según implementación, cancelación/denegación |
-| Notificaciones locales | Pendiente | Canal/configuración, permiso según Android, envío visible y denegación |
-| Animaciones | Pendiente | Ejecución y justificación de utilidad |
+| Persistencia | Perfil implementado con repositorio local de preferencias | Perfil recuperado después de Stop/Run en API 37; favoritos probados visualmente y recuperados tras Stop/Run en API 37 y en API 35 (equipo de Francisca); guardado de nombre/correo del perfil aún no verificado por Francisca |
+| Cámara | Implementado y probado (equipo de Francisca, API 35) | Foto tomada y confirmada: imagen guardada y mostrada en el perfil. Cancelación con Volver: se conserva la imagen anterior sin romper la app. Denegación del permiso de cámara aún no probada |
+| Notificaciones locales | Implementadas por Francisca; bloqueo y recuperación revisados en la rama conjunta | API 37: denegación, concesión, publicación visible, canal bloqueado y reintento probados; pendiente revisión cruzada de versión integrada |
+| Animaciones | Implementado y probado (equipo de Francisca, API 35) | AnimatedContent con fundido (fade) entre catálogo, detalle y perfil, probado en navegación Inicio → Perfil → Volver sin romper la app ni el estado de favoritos. Justificación de utilidad: facilita entender el cambio de pantalla a usuarios con bajo manejo digital (caso Master Martini). Observación visual detallada del efecto (grabación) aún pendiente |
 | Colaboración | Reglas documentadas | Cronograma publicado; revisar base compartida y documentar aportes reales de ambas |
 | Defensa | Pendiente | Ambas explican y modifican todo el proyecto sin apoyo durante la evaluación |
 
 ## Regla de trabajo
 
 Antes de desarrollar: identificar fuente, requisito, función y evidencia esperada. Después: comprobar comportamiento y registrar resultado. Código escrito no equivale a funcionalidad probada. No declarar cumplimiento total ni inventar exigencias faltantes. Contrastar las nuevas fuentes al recibirlas y ajustar esta matriz.
+
+## Aclaración de persistencia
+
+EP3, páginas 4–5, permite explicar SQLite (Room) o el mecanismo de persistencia utilizado. No obliga exclusivamente a Room. La confirmación pendiente corresponde a EP2, cuya rúbrica detallada de DSY1105 aún falta. No confundir con el PDF de FullStack.
