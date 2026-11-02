@@ -207,3 +207,9 @@ Validación: assembleDebug y 16 pruebas unitarias aprobadas; 13 pruebas Android 
 Se ejecutó fetch explícito de todas las ramas publicadas. Todas sus puntas son antecesoras del HEAD integrado. Los commits publicados de Francisca 7f09142 (navegación/detalle) y 8a0b727 (notificaciones/animaciones) ya están incluidos y mantienen su autoría. No hay otra rama publicada con cambios pendientes de incorporar. No se puede afirmar lo mismo de trabajo aún no subido desde otro computador.
 
 PR #12 abierto, sin revisión registrada al consultar. Se añade CIERRE_ENTREGA.md para separar implementación y comprobaciones pendientes. No se declara terminada la evaluación: falta la rúbrica detallada EP2, revisión cruzada, comprobaciones manuales y defensa individual.
+
+## Cierre técnico — 2 de noviembre de 2026
+
+Michel autorizó finalizar sin esperar revisión de Francisca. Se añadió un icono vectorial de la app y reglas de extracción que excluyen los datos locales de copia/transferencia. Los informes finales registran 16 pruebas unitarias y 13 pruebas Android sin fallos. Lint no registra errores; mantiene 14 advertencias de mantenimiento y compatibilidad. No se actualizaron versiones de dependencias para esta entrega.
+
+La autorización no acredita una revisión de Francisca ni sustituye la rúbrica detallada EP2 no recibida. El paquete incluye código y APK debug del mismo estado probado.

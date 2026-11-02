@@ -91,3 +91,15 @@ El segundo comando requiere un emulador o dispositivo conectado. Las pruebas de 
 El catálogo usa Window Size Classes: una columna en ancho compacto, dos en mediano y tres en expandido. Con escala de texto de 1,5 o mayor conserva una sola columna. Perfil y detalle limitan su ancho a 840 dp y siguen siendo desplazables.
 
 El formulario ofrece Siguiente y Listo. Listo termina la edición sin guardar; Guardar valida y persiste. Para la revisión final consultar [CIERRE_ENTREGA.md](docs/CIERRE_ENTREGA.md), que distingue pruebas realizadas de comprobaciones pendientes.
+
+## Entrega y validación final
+
+Michel autorizó finalizar la integración sin esperar una revisión de Francisca; esto no atribuye a Francisca una aprobación. El PR #12 conserva los commits de ambas. El paquete ZIP de entrega contiene únicamente archivos versionados y se acompaña de un APK debug para demostración.
+
+Para reproducir la comprobación con un dispositivo conectado:
+
+```sh
+./gradlew lintDebug testDebugUnitTest assembleDebug connectedDebugAndroidTest
+```
+
+Consultar el último registro de `docs/ESTADO.md` para resultados y entorno. Una ejecución aprobada no garantiza ausencia de errores en todos los dispositivos ni certifica criterios de una rúbrica no recibida.

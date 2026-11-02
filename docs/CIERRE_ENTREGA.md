@@ -4,7 +4,7 @@ Fecha de revisión: 1 de noviembre de 2026. Esta lista no sustituye la rúbrica 
 
 ## Versión a revisar
 
-Rama: `codex/revision-avances`. PR #12 reúne los cambios de ambas conservando los autores. La revisión de GitHub todavía no muestra una aprobación; no se ha fusionado a main.
+Rama: `codex/revision-avances`. PR #12 reúne los cambios de ambas conservando los autores. Michel autorizó finalizar e integrar sin esperar la revisión de Francisca. Esto no acredita una revisión realizada por Francisca.
 
 Para actualizar una copia con el trabajo local guardado:
 
@@ -24,7 +24,7 @@ Entorno usado: JDK 21 para Gradle, SDK 35 para compilar y emulador API 37 para p
 4. Tomar una imagen de prueba; cancelar una segunda captura y comprobar que la primera se conserva.
 5. Autorizar notificaciones y enviar aviso. Denegar o bloquear y comprobar el mensaje correspondiente. Tocar el aviso con la app en segundo plano y cerrada.
 6. Revisar catálogo con anchos de móvil y tablet, orientación horizontal y texto grande. Verificar lectura, controles y contraste con el dispositivo real que se usará.
-7. Francisca registra versión, resultado y observaciones en el PR; Michel corrige y ambas revisan antes de fusionar.
+7. Registrar versión, resultado y observaciones. La revisión de Francisca puede hacerse posteriormente; Michel autorizó integrar sin esperarla.
 
 ## Correspondencia con lo estudiado
 
@@ -39,7 +39,7 @@ Entorno usado: JDK 21 para Gradle, SDK 35 para compilar y emulador API 37 para p
 ## Pendientes que no se pueden acreditar automáticamente
 
 - Rúbrica EP2 original: el PDF de EP2 localizado anteriormente corresponde a FullStack, no Móviles.
-- Revisión cruzada y ejecución en el computador de cada integrante.
+- Ejecución en el computador de cada integrante; revisión posterior de Francisca cuando esté disponible.
 - Comprobación manual de teclado, toque de notificación, lector de pantalla y teléfono físico.
 - Defensa: cada estudiante explica y modifica validación, estado, persistencia y recursos nativos en 15 minutos, según EP3.
 - Confirmar fecha/hora, acceso del profesor, formato de entrega y recepción en el campus. El día 31 mencionado antes era provisional; no se presenta como plazo verificado.
